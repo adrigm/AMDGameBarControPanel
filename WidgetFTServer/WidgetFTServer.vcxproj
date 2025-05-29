@@ -155,12 +155,14 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AdlxFeatureController.h" />
     <ClInclude Include="cppwinrt_wrl_priv.h" />
     <ClInclude Include="inc\WidgetFTFactoryClsid.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClCompile Include="..\..\..\Dev\ADLX\SDK\ADLXHelper\Windows\Cpp\ADLXHelper.cpp" />
     <ClCompile Include="..\..\..\Dev\ADLX\SDK\Platform\Windows\WinAPIs.cpp" />
+    <ClCompile Include="AdlxFeatureController.cpp" />
     <ClCompile Include="SampleComponent\SampleComponent.cpp" />
     <ClCompile Include="UI\Window.cpp" />
     <ClCompile Include="UI\WmQuitMonitor.cpp" />
