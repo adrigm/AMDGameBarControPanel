@@ -10,6 +10,7 @@ namespace winrt::WidgetFTSample::implementation
     Widget1::Widget1()
     {
         InitializeComponent();
+
     }
 
     winrt::fire_and_forget Widget1::CreateFTFactoryButton_Click(

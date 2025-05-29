@@ -98,7 +98,7 @@
         VERSION_MMDDR=$(builddate_mmddr);
         VERSION_YYMMDDRRR=$(builddate_yymmddrrr);
       </PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory);$(WindowsSdkDir_10)Windows Performance Toolkit;$(GeneratedFilesDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory);$(WindowsSdkDir_10)Windows Performance Toolkit;$(GeneratedFilesDir);C:\Dev\ADLX\SDK\Include;C:\Dev\ADLX\SDK\ADLXHelper\Windows\Cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <!-- DEBUG Compiler options -->
     <ClCompile Condition="'$(Configuration)' == 'Debug'">
@@ -124,7 +124,8 @@
       <AdditionalOptions>/DYNAMICBASE %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Platform)'=='x64' OR '$(Platform)'=='Win32'">/CETCOMPAT %(AdditionalOptions)</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>onecoreuap_apiset.lib;%(AdditionalDependencies);</AdditionalDependencies>
+      <AdditionalDependencies>onecoreuap_apiset.lib;amdadlx64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Dev\ADLX\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <!-- DEBUG Linker options -->
     <Link Condition="'$(Configuration)' == 'Debug'">
@@ -158,6 +159,8 @@
     <ClInclude Include="inc\WidgetFTFactoryClsid.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
+    <ClCompile Include="..\..\..\Dev\ADLX\SDK\ADLXHelper\Windows\Cpp\ADLXHelper.cpp" />
+    <ClCompile Include="..\..\..\Dev\ADLX\SDK\Platform\Windows\WinAPIs.cpp" />
     <ClCompile Include="SampleComponent\SampleComponent.cpp" />
     <ClCompile Include="UI\Window.cpp" />
     <ClCompile Include="UI\WmQuitMonitor.cpp" />
