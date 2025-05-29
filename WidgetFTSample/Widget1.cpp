@@ -11,6 +11,18 @@ namespace winrt::WidgetFTSample::implementation
     {
         InitializeComponent();
 
+        WidgetFTFactory(winrt::WidgetFTSample::GetWidgetFTFactory());
+        if (auto ftFactory{ WidgetFTFactory() })
+        {
+            SampleComponent(ftFactory.CreateSampleComponent());
+
+            if (auto sampleComponent{ SampleComponent() })
+            {
+                sampleComponent.Init();
+			}
+		}
+
+
     }
 
     winrt::fire_and_forget Widget1::CreateFTFactoryButton_Click(
