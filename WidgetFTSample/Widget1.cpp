@@ -3,7 +3,9 @@
 #include "Widget1.g.cpp"
 
 using namespace winrt;
+using namespace winrt::Windows::Foundation;
 using namespace winrt::Windows::UI::Xaml;
+using namespace winrt::Windows::UI::Xaml::Navigation;
 
 namespace winrt::WidgetFTSample::implementation
 {
@@ -17,12 +19,46 @@ namespace winrt::WidgetFTSample::implementation
             SampleComponent(ftFactory.CreateSampleComponent());
 
             if (auto sampleComponent{ SampleComponent() })
+
             {
                 sampleComponent.Init();
+
+                if (sampleComponent.AFMF_Supported()) {
+                    //IsAFMFEnabled(sampleComponent.AFMF_Enabled());
+
+                    
+					
+                }
 			}
 		}
+    }
+
+    void Widget1::OnNavigatedTo(winrt::Windows::UI::Xaml::Navigation::NavigationEventArgs const& e)
+    {
+        
+
+        m_timer.Interval(std::chrono::seconds(3));
+        m_timer.Tick({ this, &Widget1::Refresh });
+        m_timer.Start();
+    }
+
+    winrt::fire_and_forget Widget1::Refresh(IInspectable const&, IInspectable const&)
+    {
+        auto strongThis{ get_strong() };
+        co_await winrt::resume_background();
+
+        if (auto sampleComponent{ SampleComponent() })
+        {
+            sampleComponent.Refresh();
+
+            bool afmfStatus = sampleComponent.AFMF_Enabled();
+
+            if (afmfStatus != m_isAFMFEnabled) {
+                IsAFMFEnabled(afmfStatus);
+            }
 
 
+        }
     }
 
     winrt::fire_and_forget Widget1::CreateFTFactoryButton_Click(
@@ -128,51 +164,6 @@ namespace winrt::WidgetFTSample::implementation
         }
     }
 
-    bool Widget1::CreateFTFactoryButtonEnabled()
-    {
-        return !WidgetFTFactory();
-    }
-
-    bool Widget1::ReleaseFTFactoryButtonEnabled()
-    {
-        return !!WidgetFTFactory();
-    }
-
-    bool Widget1::CreateSampleComponentButtonEnabled()
-    {
-        return !!WidgetFTFactory() && !SampleComponent();
-    }
-
-    bool Widget1::ReleaseSampleComponentButtonEnabled()
-    {
-        return !!SampleComponent();
-    }
-
-    bool Widget1::CallDemoSyncButtonEnabled()
-    {
-        return !!SampleComponent();
-    }
-
-    bool Widget1::CallDemoAsyncButtonEnabled()
-    {
-        return !!SampleComponent();
-    }
-
-    bool Widget1::DemoBoolPropertyCheckBoxEnabled()
-    {
-        return !!SampleComponent();
-    }
-
-    bool Widget1::IsDemoBoolPropertyChecked()
-    {
-        if (auto sampleComponent{ SampleComponent() })
-        {
-            return sampleComponent.DemoBoolProperty();
-        }
-
-        return false;
-    }
-
     winrt::event_token Widget1::PropertyChanged(Windows::UI::Xaml::Data::PropertyChangedEventHandler const& handler)
     {
         return m_propertyChanged.add(handler);
@@ -181,6 +172,23 @@ namespace winrt::WidgetFTSample::implementation
     void Widget1::PropertyChanged(winrt::event_token const& token) noexcept
     {
         m_propertyChanged.remove(token);
+    }
+
+    bool Widget1::IsAFMFEnabled()
+    {
+        return m_isAFMFEnabled;
+    }
+
+    void Widget1::IsAFMFEnabled(bool value)
+    {
+        m_isAFMFEnabled = value;
+
+        if (auto sampleComponent{ SampleComponent() })
+        {
+            sampleComponent.AFMF_SetEnabled(value);
+        }
+
+        RaisePropertyChanged(L"IsAFMFEnabled");
     }
 
     winrt::WidgetFT::WidgetFTFactory Widget1::WidgetFTFactory()

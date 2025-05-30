@@ -8,6 +8,8 @@ namespace winrt::WidgetFTSample::implementation
     {
         Widget1();
 
+        virtual void OnNavigatedTo(winrt::Windows::UI::Xaml::Navigation::NavigationEventArgs const& e);
+
         winrt::fire_and_forget CreateFTFactoryButton_Click(
             winrt::Windows::Foundation::IInspectable sender, 
             winrt::Windows::UI::Xaml::RoutedEventArgs e);
@@ -35,20 +37,18 @@ namespace winrt::WidgetFTSample::implementation
         winrt::fire_and_forget DemoBoolPropertyCheckBox_Click(
             winrt::Windows::Foundation::IInspectable sender,
             winrt::Windows::UI::Xaml::RoutedEventArgs e);
+        
 
     public: // From Widget1.idl
 
-        bool CreateFTFactoryButtonEnabled();
-        bool ReleaseFTFactoryButtonEnabled();
-        bool CreateSampleComponentButtonEnabled();
-        bool ReleaseSampleComponentButtonEnabled();
-        bool CallDemoSyncButtonEnabled();
-        bool CallDemoAsyncButtonEnabled();
-        bool DemoBoolPropertyCheckBoxEnabled();
-        bool IsDemoBoolPropertyChecked();
+        bool IsAFMFEnabled();
+        void IsAFMFEnabled(bool value);
 
         winrt::event_token PropertyChanged(Windows::UI::Xaml::Data::PropertyChangedEventHandler const& handler);
         void PropertyChanged(winrt::event_token const& token) noexcept;
+
+        
+		
 
     private: // Internal state property methods
 
@@ -72,6 +72,12 @@ namespace winrt::WidgetFTSample::implementation
 
         wil::srwlock m_sampleComponentLock;
         winrt::WidgetFT::SampleComponent m_sampleComponent{ nullptr };
+
+        winrt::fire_and_forget Refresh(IInspectable const&, IInspectable const&);
+
+        winrt::Windows::UI::Xaml::DispatcherTimer m_timer;
+
+        bool m_isAFMFEnabled{ false };
     };
 }
 

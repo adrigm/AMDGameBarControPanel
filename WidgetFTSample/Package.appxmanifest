@@ -10,7 +10,7 @@
   
   <Identity
     Name="AGMStudio.AMDControlPanel"
-    Publisher="CN=214D6138-9581-485B-8A9A-EC15738A1551"
+    Publisher="CN=adrigm"
     Version="1.0.0.0" />
   
   <mp:PhoneIdentity PhoneProductId="9d642686-acee-401e-8705-597c04e17889" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
@@ -65,7 +65,7 @@
                 <HomeMenuVisible>true</HomeMenuVisible>
                 <PinningSupported>true</PinningSupported>
                 <Window>
-                  <AllowForegroundTransparency>true</AllowForegroundTransparency>
+                  <AllowForegroundTransparency>false</AllowForegroundTransparency>
                   <Size>
                     <Height>300</Height>
                     <Width>400</Width>
