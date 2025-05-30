@@ -135,6 +135,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <AdditionalOptions>/GUARD:CF %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Dev\ADLX\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <!-- PREFAST Linker options -->
     <Link Condition="'$(Configuration)' == 'Prefast'">
