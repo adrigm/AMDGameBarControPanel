@@ -23,12 +23,8 @@ namespace winrt::WidgetFTSample::implementation
             {
                 sampleComponent.Init();
 
-                if (sampleComponent.AFMF_Supported()) {
-                    //IsAFMFEnabled(sampleComponent.AFMF_Enabled());
-
-                    
-					
-                }
+                //if (sampleComponent.AFMF_Supported()) {
+                //}
 			}
 		}
     }
@@ -40,6 +36,7 @@ namespace winrt::WidgetFTSample::implementation
         m_timer.Interval(std::chrono::seconds(3));
         m_timer.Tick({ this, &Widget1::Refresh });
         m_timer.Start();
+
     }
 
     winrt::fire_and_forget Widget1::Refresh(IInspectable const&, IInspectable const&)
@@ -189,6 +186,13 @@ namespace winrt::WidgetFTSample::implementation
         }
 
         RaisePropertyChanged(L"IsAFMFEnabled");
+    }
+
+    winrt::fire_and_forget Widget1::btnAfmfClick(winrt::Windows::Foundation::IInspectable const& sender, winrt::Windows::UI::Xaml::RoutedEventArgs const& e)
+    {
+        auto strongThis{ get_strong() };
+        co_await winrt::resume_background();
+        IsAFMFEnabled(!IsAFMFEnabled());
     }
 
     winrt::WidgetFT::WidgetFTFactory Widget1::WidgetFTFactory()

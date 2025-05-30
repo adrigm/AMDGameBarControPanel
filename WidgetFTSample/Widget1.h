@@ -44,6 +44,10 @@ namespace winrt::WidgetFTSample::implementation
         bool IsAFMFEnabled();
         void IsAFMFEnabled(bool value);
 
+        winrt::fire_and_forget btnAfmfClick(
+            winrt::Windows::Foundation::IInspectable const& sender,
+			winrt::Windows::UI::Xaml::RoutedEventArgs const& e);
+
         winrt::event_token PropertyChanged(Windows::UI::Xaml::Data::PropertyChangedEventHandler const& handler);
         void PropertyChanged(winrt::event_token const& token) noexcept;
 
