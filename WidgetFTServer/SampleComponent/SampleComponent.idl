@@ -1,15 +1,52 @@
-namespace WidgetFT
+﻿namespace WidgetFT
 {
-    delegate void DemoBoolPropertyChangedDelegate(Boolean newValue); // delegate type, for event
+    // Delegado para la notificación cuando cambia DemoBoolProperty
+    delegate void DemoBoolPropertyChangedDelegate(Boolean newValue);
 
-    // See https://learn.microsoft.com/en-us/uwp/midl-3/ for how to define runtimeclasses in MIDL3.
     runtimeclass SampleComponent
     {
+        ////
+        //// Operaciones generales
+        ////
         Windows.Foundation.IAsyncAction DemoAsync();
-        void DemoSync();
-        void Init();
+        void  DemoSync();
+        void  Init();
+        void  Refresh();
 
-        Boolean DemoBoolProperty; // Set/Get. To only do Get, use { get; }.
+        ////
+        //// Contador usado en la demo síncrona
+        ////
+        Int32 DemoSyncCounter();
+
+        ////
+        //// Estado global de error
+        ////
+        Boolean HasError();
+        String  Error();
+
+        ////
+        //// AFMF (AMD Fluid Motion Frames)
+        ////
+        Boolean AFMF_Supported();
+        Boolean AFMF_Enabled();
+        Boolean AFMF_SetEnabled(Boolean enable);
+
+        ////
+        //// RIS (Radeon Image Sharpening)
+        ////
+        Boolean RIS_Supported();
+        Boolean RIS_Enabled();
+        Boolean RIS_SetEnabled(Boolean enable);
+
+        Int32   RIS_Sharpness();
+        Int32   RIS_SharpnessMin();
+        Int32   RIS_SharpnessMax();
+        Boolean RIS_SetSharpness(Int32 value);
+
+        //
+        // Propiedad de demostración y evento asociado
+        //
+        Boolean DemoBoolProperty;                       // { get; set; }
         event DemoBoolPropertyChangedDelegate DemoBoolPropertyChanged;
     }
 }

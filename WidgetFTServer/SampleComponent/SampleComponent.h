@@ -27,6 +27,34 @@ namespace winrt::WidgetFT::implementation
 
         void Init();
 
+        void Refresh();
+
+        // ---------------------------------------------------------------------
+        //  Global error state
+        // ---------------------------------------------------------------------
+        bool HasError() const;
+        winrt::hstring Error() const;
+
+        // ---------------------------------------------------------------------
+        //  AFMF
+        // ---------------------------------------------------------------------
+        bool AFMF_Supported() const;
+        bool AFMF_Enabled() const;
+        bool AFMF_SetEnabled(bool enable);
+
+        // ---------------------------------------------------------------------
+        //  RIS (Image Sharpening)
+        // ---------------------------------------------------------------------
+        bool RIS_Supported()  const;
+        bool RIS_Enabled()    const;
+        bool RIS_SetEnabled(bool enable);
+
+        // Sharpening Slider (valid only if RIS is enabled)
+        int RIS_Sharpness()  const;
+        int RIS_SharpnessMin() const;
+        int RIS_SharpnessMax() const;
+        bool RIS_SetSharpness(int value);
+
     private:
 
         winrt::fire_and_forget RaiseDemoBoolPropertyChanged(bool value);
@@ -37,5 +65,9 @@ namespace winrt::WidgetFT::implementation
 
         bool m_demoBoolProperty{ false };
         winrt::event<winrt::WidgetFT::DemoBoolPropertyChangedDelegate> m_demoBoolPropertyChangedEvent;
+
+		// bool for AFMF State
+		bool m_afmfEnabled{ false };
+		winrt::event<winrt::WidgetFT::DemoBoolPropertyChangedDelegate> m_afmfStateChangedEvent;
     };
 }
