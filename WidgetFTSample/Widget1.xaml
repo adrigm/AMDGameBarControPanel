@@ -33,6 +33,7 @@
 
     <Grid Background="#25282c">
         <StackPanel
+            x:Name="contentPanel"
             Orientation="Vertical"
             VerticalAlignment="Top"
             HorizontalAlignment="Center"
@@ -103,35 +104,37 @@
             </Button>
 
             <!-- Slider de nitidez RIS -->
-            <StackPanel Orientation="Horizontal" Margin="10,8,0,-4">
+            <StackPanel x:Name="risSliderPanel" Margin="10,0,0,-4" Padding="10,0,10,0">
+                <StackPanel Orientation="Horizontal"  >
+                    <TextBlock
+                        x:Name="sharpnessTitle"
+                        Text="Sharpness"
+                        FontSize="13"
+                        Opacity="0.75"
+        
+                        HorizontalAlignment="Left"/>
                 <TextBlock
-                    x:Name="sharpnessTitle"
-                    Text="Sharpness"
-                    FontSize="13"
-                    Opacity="0.75"
-                    
-                    HorizontalAlignment="Left"/>
-                <TextBlock
-                    x:Name="sharpnessCurrent"
-                    Text=""
-                    FontSize="13"
-                    Opacity="0.75"
-                    Margin="10,0,0,0"
-                    HorizontalAlignment="Left"/>
+                        x:Name="sharpnessCurrent"
+                        Text=""
+                        FontSize="13"
+                        Opacity="0.75"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Left"/>
+                </StackPanel>
+
+                <Slider
+                    x:Name="risSharpnessSlider"
+                    Width="360"
+                    HorizontalAlignment="Left"
+                    Margin="0,-0,0,0"
+                    Minimum="0"
+                    Padding="0,4,0,0"
+                    Maximum="100"
+                    StepFrequency="1"
+                    IsFocusEngagementEnabled="False"
+                    Value="{x:Bind SharpnessValue, Mode=TwoWay}"
+                    IsThumbToolTipEnabled="True"/>
             </StackPanel>
-            
-            <Slider
-                x:Name="risSharpnessSlider"
-                Width="360"
-                HorizontalAlignment="Left"
-                Margin="0,-8,0,0"
-                Minimum="0"
-                Padding="10,0"
-                Maximum="100"
-                StepFrequency="1"
-                IsFocusEngagementEnabled="False"
-                Value="{x:Bind SharpnessValue, Mode=TwoWay}"
-                IsThumbToolTipEnabled="True"/>
 
             <!-- Botón para RSR -->
             <Button
@@ -165,5 +168,16 @@
                 </Grid>
             </Button>
         </StackPanel>
+
+        <!-- Mensaje para hardware no soportado -->
+        <TextBlock
+        x:Name="unsupportedText"
+        Text="Device not supported"
+        Foreground="White"
+        FontSize="16"
+        FontWeight="SemiBold"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Visibility="Collapsed"/>
     </Grid>
 </Page>

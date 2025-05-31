@@ -25,14 +25,19 @@ namespace winrt::WidgetFTSample::implementation
 
             if (auto sampleComponent{ SampleComponent() })
             {
-                sampleComponent.Init();
-                m_sharpnessValue = sampleComponent.RIS_Sharpness();
+                m_isInitialized = sampleComponent.Init();
+                UpdateInitializationState();
 
-                m_sharpnessMin = sampleComponent.RIS_SharpnessMin();
-                m_sharpnessMax = sampleComponent.RIS_SharpnessMax();
-                UpdateSharpnessRange(m_sharpnessMin, m_sharpnessMax);
+                if (m_isInitialized)
+                {
+					SetVisibilitySharpness();
+                    m_sharpnessValue = sampleComponent.RIS_Sharpness();
+                    m_sharpnessMin = sampleComponent.RIS_SharpnessMin();
+                    m_sharpnessMax = sampleComponent.RIS_SharpnessMax();
+                    UpdateSharpnessRange(m_sharpnessMin, m_sharpnessMax);
 
-				Refresh(nullptr, nullptr); // Llamar al refresco inicial
+                    Refresh(nullptr, nullptr); // Llamar al refresco inicial
+                }
 
                 // Ejemplo: comprobar soporte AFMF
                 // if (sampleComponent.AFMF_Supported()) { }
@@ -62,6 +67,9 @@ namespace winrt::WidgetFTSample::implementation
         auto strongThis{ get_strong() };
         co_await winrt::resume_background();
 
+        if (!m_isInitialized)
+            co_return;
+
         if (auto sampleComponent{ SampleComponent() })
         {
             sampleComponent.Refresh();
@@ -82,20 +90,10 @@ namespace winrt::WidgetFTSample::implementation
             if (rsrStatus != m_isRSREnabled)
             {
                 IsRSREnabled(rsrStatus);
+                SetVisibilitySharpness();
             }
 
             int sharp = sampleComponent.RIS_Sharpness();
-            
-            /*if (sharp) {
-				co_await winrt::resume_foreground(Dispatcher());
-                sharpnessCurrent().Text(L"(Current: " + std::to_wstring(sharp) + L")");
-            }*/
-
-            // show value in console
-            OutputDebugStringW(L"------------------------------\n");
-            OutputDebugStringW(L"Sharpness value: ");
-			OutputDebugStringW(std::to_wstring(sharp).c_str());
-			OutputDebugStringW(L"\n------------------------------\n");
 
             if (sharp != m_sharpnessValue)
             {
@@ -166,9 +164,17 @@ namespace winrt::WidgetFTSample::implementation
         return m_isRISEnabled;
 	}
 
-    void Widget1::IsRISEnabled(bool value)
+    winrt::fire_and_forget Widget1::IsRISEnabled(bool value)
     {
+        if (m_isRISEnabled == value) return;
+
+        auto strongThis{ get_strong() };
+        co_await winrt::resume_background();
+
+
         m_isRISEnabled = value;
+        SetVisibilitySharpness();
+
         if (auto sampleComponent{ SampleComponent() })
         {
             sampleComponent.RIS_SetEnabled(value);
@@ -250,6 +256,39 @@ namespace winrt::WidgetFTSample::implementation
             sampleComponent.RIS_SetSharpness(value);
         }
         RaisePropertyChanged(L"SharpnessValue");
+    }
+
+
+    winrt::fire_and_forget Widget1::UpdateInitializationState()
+    {
+		auto strongThis{ get_strong() };
+		co_await winrt::resume_foreground(Dispatcher());
+
+        // Asegúrate de estar en el hilo UI
+        contentPanel().Visibility(
+            m_isInitialized
+            ? Windows::UI::Xaml::Visibility::Visible
+            : Windows::UI::Xaml::Visibility::Collapsed);
+
+        unsupportedText().Visibility(
+            m_isInitialized
+            ? Windows::UI::Xaml::Visibility::Collapsed
+            : Windows::UI::Xaml::Visibility::Visible);
+    }
+
+    winrt::fire_and_forget Widget1::SetVisibilitySharpness()
+    {
+        auto strongThis{ get_strong() };
+        co_await winrt::resume_foreground(Dispatcher());
+
+        if (m_isRISEnabled)
+        {
+			risSliderPanel().Visibility(Windows::UI::Xaml::Visibility::Visible);
+        }
+        else
+        {
+			risSliderPanel().Visibility(Windows::UI::Xaml::Visibility::Collapsed);
+        }
     }
 
 

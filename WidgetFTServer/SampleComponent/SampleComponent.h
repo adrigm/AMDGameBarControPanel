@@ -25,7 +25,7 @@ namespace winrt::WidgetFT::implementation
         void DemoBoolPropertyChanged(winrt::event_token const& token) noexcept;
         int DemoSyncCounter() const noexcept;
 
-        void Init();
+        bool Init();
 
         void Refresh();
 

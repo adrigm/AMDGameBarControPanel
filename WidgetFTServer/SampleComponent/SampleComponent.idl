@@ -10,7 +10,7 @@
         ////
         Windows.Foundation.IAsyncAction DemoAsync();
         void  DemoSync();
-        void  Init();
+        Boolean  Init();
         void  Refresh();
 
         ////

@@ -22,21 +22,19 @@ namespace winrt::WidgetFT::implementation
         OutputDebugStringW(L"[WidgetFTServer] DemoAsync completed\n");
     }
 
-    void SampleComponent::Init() {
+    bool SampleComponent::Init() {
         OutputDebugStringW(L"-----------------------------------\n");
         ADLX_RESULT r = m_adlxFeatureController.Initialize();
         if (ADLX_SUCCEEDED(r))
         {
             OutputDebugStringW(L"[WidgetFTServer] ADLX Feature Controller initialized\n");
-            /*m_adlxFeatureController.AFMF_SetEnabled(true);
-			m_adlxFeatureController.RIS_SetEnabled(true);
-            m_adlxFeatureController.RIS_SetSharpness(20);*/
-
         }
         else
         {
             OutputDebugStringW(L"[WidgetFTServer] ADLX Feature Controller initialization failed\n");
         }
+
+        return ADLX_SUCCEEDED(r);
     }
 
     void SampleComponent::Refresh()

@@ -28,7 +28,7 @@ namespace winrt::WidgetFTSample::implementation
 
 		// Manejador de clic del botón que muestra el estado de RIS
 		bool IsRISEnabled();
-		void IsRISEnabled(bool value);
+        winrt::fire_and_forget IsRISEnabled(bool value);
 
         // Manejador de clic del botón que conmuta RIS
         winrt::fire_and_forget btnRisClick(
@@ -94,6 +94,9 @@ namespace winrt::WidgetFTSample::implementation
             winrt::Windows::Foundation::IInspectable const&,
             winrt::Windows::Foundation::IInspectable const&);
 
+        // Init Status
+		bool m_isInitialized{ false };
+
         // Estado actual de AFMF
         bool m_isAFMFEnabled{ false };
 
@@ -109,8 +112,12 @@ namespace winrt::WidgetFTSample::implementation
         int m_sharpnessMin{ 0 };
         int m_sharpnessMax{ 100 };
 
+        winrt::fire_and_forget SetVisibilitySharpness();
+
         // Actualiza título y rango del slider en UI-thread
         void UpdateSharpnessRange(int min, int max);
+
+        winrt::fire_and_forget UpdateInitializationState();
 
     };
 } // namespace winrt::WidgetFTSample::implementation
