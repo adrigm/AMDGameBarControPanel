@@ -5,9 +5,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:WidgetFTSample"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Width="400" Height="400">
+    mc:Ignorable="d"
+    Width="400"
+    Height="400">
 
     <Page.Resources>
+        <!-- Estilo para botones planos -->
         <Style x:Key="FlatButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -17,56 +20,104 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        <ContentPresenter
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+
     </Page.Resources>
 
-
     <Grid>
-        <StackPanel Orientation="Vertical"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Center"
-                    Spacing="12"
-         >
+        <StackPanel
+            Orientation="Vertical"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Center"
+            Spacing="12">
 
-            <!-- AFMF toggle -->
-            <Button Style="{StaticResource FlatButtonStyle}"
-                    Click="btnAfmfClick"
-                    Background="Transparent"
-                    HorizontalAlignment="Left"
-                    Height="64"
-                    Width="360">
-                <Grid Height="64" Width="400" HorizontalAlignment="Left">
+            <!-- Botón para AFMF -->
+            <Button
+                Style="{StaticResource FlatButtonStyle}"
+                Click="btnAfmfClick"
+                Background="Transparent"
+                HorizontalAlignment="Left"
+                Height="64"
+                Width="360">
+
+                <Grid Height="64" Width="360" HorizontalAlignment="Left" Padding="12,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0"
-                                MaxWidth="400"
-                                VerticalAlignment="Center"
-                                Margin="12,0">
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
                         <TextBlock Text="AFMF 2.1" FontWeight="SemiBold" FontSize="14"/>
                         <TextBlock Text="AMD Fluid Motion Frames" FontSize="12" Opacity="0.65"/>
                     </StackPanel>
 
                     <ToggleSwitch x:Name="afmfSwitch"
+                                  Grid.Column="1"
+                                  Width="64"
                                   OnContent=""
                                   OffContent=""
-                                  MaxWidth="50"
-                                  Margin="294,0,0,0"
-                                  Width="64"
                                   IsTapEnabled="False"
                                   IsFocusEngaged="False"
-                                  IsOn="{x:Bind IsAFMFEnabled, Mode=TwoWay}"
-                                  IsFocusEngagementEnabled="False"/>
+                                  IsFocusEngagementEnabled="False"
+                                  IsOn="{x:Bind IsAFMFEnabled, Mode=TwoWay}"/>
                 </Grid>
             </Button>
 
+            <!-- Botón para RIS -->
+            <Button
+                Style="{StaticResource FlatButtonStyle}"
+                Click="btnRisClick"
+                Background="Transparent"
+                HorizontalAlignment="Left"
+                Height="64"
+                Width="360">
+
+                <Grid Height="64" Width="360" HorizontalAlignment="Left" Padding="12,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
+                        <TextBlock Text="RIS" FontWeight="SemiBold" FontSize="14"/>
+                        <TextBlock Text="Radeon Image Sharpening" FontSize="12" Opacity="0.65"/>
+                    </StackPanel>
+
+                    <ToggleSwitch x:Name="risSwitch"
+                                  Grid.Column="1"
+                                  Width="64"
+                                  OnContent=""
+                                  OffContent=""
+                                  IsTapEnabled="False"
+                                  IsFocusEngaged="False"
+                                  IsFocusEngagementEnabled="False"
+                                  IsOn="{x:Bind IsRISEnabled, Mode=TwoWay}"/>
+                </Grid>
+            </Button>
+
+            <!-- Slider de nitidez para RIS -->
+            <!-- <StackPanel
+                Orientation="Horizontal"
+                Width="360"
+                Spacing="8"
+                VerticalAlignment="Center"
+                Visibility="{x:Bind RISSVisibility, Mode=OneWay}">
+
+                        <TextBlock Text="Nitidez" VerticalAlignment="Center" Width="60"/>
+                        <Slider
+                x:Name="risSlider"
+                Minimum="0"
+                Maximum="100"
+                Value="{x:Bind RISSValue, Mode=TwoWay}"
+                Width="280"/>
+            </StackPanel> -->
         </StackPanel>
     </Grid>
 </Page>

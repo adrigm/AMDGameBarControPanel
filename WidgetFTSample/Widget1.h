@@ -1,93 +1,98 @@
 ﻿#pragma once
-
 #include "Widget1.g.h"
 
 namespace winrt::WidgetFTSample::implementation
 {
+    //------------------------------------------------------------------------------
+    //  Clase principal del widget
+    //------------------------------------------------------------------------------
     struct Widget1 : Widget1T<Widget1>
     {
+        //--------------------------------------------------------------------------
+        //  Construcción y navegación
+        //--------------------------------------------------------------------------
         Widget1();
+        void OnNavigatedTo(
+            winrt::Windows::UI::Xaml::Navigation::NavigationEventArgs const& e);
 
-        virtual void OnNavigatedTo(winrt::Windows::UI::Xaml::Navigation::NavigationEventArgs const& e);
+    public: // ------------------------ Interface pública (IDL) --------------------
 
-        winrt::fire_and_forget CreateFTFactoryButton_Click(
-            winrt::Windows::Foundation::IInspectable sender, 
-            winrt::Windows::UI::Xaml::RoutedEventArgs e);
-
-        winrt::fire_and_forget ReleaseFTFactoryButton_Click(
-            winrt::Windows::Foundation::IInspectable sender,
-            winrt::Windows::UI::Xaml::RoutedEventArgs e);
-
-        winrt::fire_and_forget CreateSampleComponentButton_Click(
-            winrt::Windows::Foundation::IInspectable sender,
-            winrt::Windows::UI::Xaml::RoutedEventArgs e);
-
-        winrt::fire_and_forget ReleaseSampleComponentButton_Click(
-            winrt::Windows::Foundation::IInspectable sender,
-            winrt::Windows::UI::Xaml::RoutedEventArgs e);
-
-        winrt::fire_and_forget CallDemoSyncButton_Click(
-            winrt::Windows::Foundation::IInspectable sender,
-            winrt::Windows::UI::Xaml::RoutedEventArgs e);
-
-        winrt::fire_and_forget CallDemoAsyncButton_Click(
-            winrt::Windows::Foundation::IInspectable sender,
-            winrt::Windows::UI::Xaml::RoutedEventArgs e);
-
-        winrt::fire_and_forget DemoBoolPropertyCheckBox_Click(
-            winrt::Windows::Foundation::IInspectable sender,
-            winrt::Windows::UI::Xaml::RoutedEventArgs e);
-        
-
-    public: // From Widget1.idl
-
+        // Propiedad: indica si AFMF está habilitado
         bool IsAFMFEnabled();
         void IsAFMFEnabled(bool value);
 
+        // Manejador de clic del botón que conmuta AFMF
         winrt::fire_and_forget btnAfmfClick(
             winrt::Windows::Foundation::IInspectable const& sender,
-			winrt::Windows::UI::Xaml::RoutedEventArgs const& e);
+            winrt::Windows::UI::Xaml::RoutedEventArgs const& e);
 
-        winrt::event_token PropertyChanged(Windows::UI::Xaml::Data::PropertyChangedEventHandler const& handler);
+		// Manejador de clic del botón que muestra el estado de RIS
+		bool IsRISEnabled();
+		void IsRISEnabled(bool value);
+
+        // Manejador de clic del botón que conmuta RIS
+        winrt::fire_and_forget btnRisClick(
+            winrt::Windows::Foundation::IInspectable const& sender,
+            winrt::Windows::UI::Xaml::RoutedEventArgs const& e);
+
+        // Soporte INotifyPropertyChanged
+        winrt::event_token PropertyChanged(
+            Windows::UI::Xaml::Data::PropertyChangedEventHandler const& handler);
         void PropertyChanged(winrt::event_token const& token) noexcept;
 
-        
-		
+    private: // ----------------------- Acceso a propiedades internas --------------
 
-    private: // Internal state property methods
+        // WidgetFTFactory (getter / setter)
+        winrt::WidgetFT::WidgetFTFactory  WidgetFTFactory();
+        void WidgetFTFactory(
+            winrt::WidgetFT::WidgetFTFactory const& value);
 
-        winrt::WidgetFT::WidgetFTFactory WidgetFTFactory();
-        void WidgetFTFactory(winrt::WidgetFT::WidgetFTFactory const& value);
+        // SampleComponent (getter / setter)
+        winrt::WidgetFT::SampleComponent  SampleComponent();
+        void SampleComponent(
+            winrt::WidgetFT::SampleComponent const& value);
 
-        winrt::WidgetFT::SampleComponent SampleComponent();
-        void SampleComponent(winrt::WidgetFT::SampleComponent const& value);
-
-        void RaiseDemoBoolPropertyChanged(bool newValue);
+        // Notificaciones de cambio de estado/propiedad
         void RaiseObjectStatesChanged();
-        winrt::fire_and_forget RaisePropertyChanged(winrt::hstring propertyName);
+        winrt::fire_and_forget RaisePropertyChanged(
+            winrt::hstring propertyName);
 
-    private:
-        winrt::WidgetFT::SampleComponent::DemoBoolPropertyChanged_revoker m_demoBoolPropertyChangedRevoker;
+    private: // ----------------------- Estado interno ------------------------------
 
-        winrt::event<Windows::UI::Xaml::Data::PropertyChangedEventHandler> m_propertyChanged;
+        // Revoker para la propiedad DemoBool del SampleComponent
+        winrt::WidgetFT::SampleComponent::DemoBoolPropertyChanged_revoker
+            m_demoBoolPropertyChangedRevoker;
 
-        wil::srwlock m_ftFactoryLock;
+        // Evento PropertyChanged típico de MVVM
+        winrt::event<Windows::UI::Xaml::Data::PropertyChangedEventHandler>
+            m_propertyChanged;
+
+        // Sincronización y caché de la fábrica
+        wil::srwlock                     m_ftFactoryLock;
         winrt::WidgetFT::WidgetFTFactory m_ftFactory{ nullptr };
 
-        wil::srwlock m_sampleComponentLock;
+        // Sincronización y caché del componente de ejemplo
+        wil::srwlock                     m_sampleComponentLock;
         winrt::WidgetFT::SampleComponent m_sampleComponent{ nullptr };
 
-        winrt::fire_and_forget Refresh(IInspectable const&, IInspectable const&);
-
+        // Temporizador para actualizaciones periódicas
         winrt::Windows::UI::Xaml::DispatcherTimer m_timer;
+        winrt::fire_and_forget Refresh(
+            winrt::Windows::Foundation::IInspectable const&,
+            winrt::Windows::Foundation::IInspectable const&);
 
+        // Estado actual de AFMF
         bool m_isAFMFEnabled{ false };
+
+		// Estado actual de RIS
+		bool m_isRISEnabled{ false };
     };
-}
+} // namespace winrt::WidgetFTSample::implementation
 
 namespace winrt::WidgetFTSample::factory_implementation
 {
-    struct Widget1 : Widget1T<Widget1, implementation::Widget1>
-    {
-    };
-}
+    //------------------------------------------------------------------------------
+    //  Plantilla de la fábrica generada por cppwinrt
+    //------------------------------------------------------------------------------
+    struct Widget1 : Widget1T<Widget1, implementation::Widget1> {};
+} // namespace winrt::WidgetFTSample::factory_implementation

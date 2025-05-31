@@ -6,5 +6,6 @@ namespace WidgetFTSample
         Widget1();
 
         Boolean IsAFMFEnabled{ get; set; };
+		Boolean IsRISEnabled{ get; set; };
     }
 }
