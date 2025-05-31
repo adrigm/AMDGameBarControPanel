@@ -104,6 +104,13 @@ namespace winrt::WidgetFTSample::implementation
         bool m_isRSREnabled{ false };
         // Valor de nitidez RIS (0-100)
 		int m_sharpnessValue{ 0 }; // Valor predeterminado
+
+        // Rango actual del slider RIS
+        int m_sharpnessMin{ 0 };
+        int m_sharpnessMax{ 100 };
+
+        // Actualiza título y rango del slider en UI-thread
+        void UpdateSharpnessRange(int min, int max);
     };
 } // namespace winrt::WidgetFTSample::implementation
 

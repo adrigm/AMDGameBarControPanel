@@ -27,6 +27,10 @@ namespace winrt::WidgetFTSample::implementation
                 sampleComponent.Init();
                 m_sharpnessValue = sampleComponent.RIS_Sharpness();
 
+                m_sharpnessMin = sampleComponent.RIS_SharpnessMin();
+                m_sharpnessMax = sampleComponent.RIS_SharpnessMax();
+                UpdateSharpnessRange(m_sharpnessMin, m_sharpnessMax);
+
                 // Ejemplo: comprobar soporte AFMF
                 // if (sampleComponent.AFMF_Supported()) { }
             }
@@ -81,6 +85,14 @@ namespace winrt::WidgetFTSample::implementation
             if (sharp != m_sharpnessValue)
             {
                 SharpnessValue(sharp);
+            }
+
+            int newMin = sampleComponent.RIS_SharpnessMin();
+            int newMax = sampleComponent.RIS_SharpnessMax();
+            if (newMin != m_sharpnessMin || newMax != m_sharpnessMax)
+            {
+                co_await resume_foreground(Dispatcher());
+                UpdateSharpnessRange(newMin, newMax);
             }
         }
     }
@@ -148,6 +160,21 @@ namespace winrt::WidgetFTSample::implementation
         }
         RaisePropertyChanged(L"IsRISEnabled");
 	}
+
+    void Widget1::UpdateSharpnessRange(int min, int max)
+    {
+        m_sharpnessMin = min;
+        m_sharpnessMax = max;
+
+        // Ajustamos el rango del slider (propiedades son double)
+        risSharpnessSlider().Minimum(static_cast<double>(min));
+        risSharpnessSlider().Maximum(static_cast<double>(max));
+
+        // Título con números claros
+        std::wstring text = L"Sharpness (" + std::to_wstring(min) +
+            L" - " + std::to_wstring(max) + L")";
+        sharpnessTitle().Text(text);
+    }
 
     //----------------------------------------------------------------------------
     //  Manejador de clic del botón RIS

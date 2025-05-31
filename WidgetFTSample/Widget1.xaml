@@ -103,6 +103,12 @@
             </Button>
 
             <!-- Slider de nitidez RIS -->
+            <TextBlock
+                x:Name="sharpnessTitle"
+                Text="Sharpness"
+                FontSize="12"
+                Margin="0,8,0,-4"
+                HorizontalAlignment="Left"/>
             <Slider
                 x:Name="risSharpnessSlider"
                 Width="360"
