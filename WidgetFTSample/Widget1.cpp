@@ -16,6 +16,7 @@ namespace winrt::WidgetFTSample::implementation
     {
         InitializeComponent();
 
+
         // Inicializar la fábrica y el componente de ejemplo
         WidgetFTFactory(winrt::WidgetFTSample::GetWidgetFTFactory());
         if (auto ftFactory{ WidgetFTFactory() })
@@ -82,6 +83,12 @@ namespace winrt::WidgetFTSample::implementation
             }
 
             int sharp = sampleComponent.RIS_Sharpness();
+            // show value in console
+            OutputDebugStringW(L"------------------------------\n");
+            OutputDebugStringW(L"Sharpness value: ");
+			OutputDebugStringW(std::to_wstring(sharp).c_str());
+			OutputDebugStringW(L"\n------------------------------\n");
+
             if (sharp != m_sharpnessValue)
             {
                 SharpnessValue(sharp);
@@ -91,7 +98,6 @@ namespace winrt::WidgetFTSample::implementation
             int newMax = sampleComponent.RIS_SharpnessMax();
             if (newMin != m_sharpnessMin || newMax != m_sharpnessMax)
             {
-                co_await resume_foreground(Dispatcher());
                 UpdateSharpnessRange(newMin, newMax);
             }
         }
@@ -224,6 +230,7 @@ namespace winrt::WidgetFTSample::implementation
     void Widget1::SharpnessValue(int value)
     {
         m_sharpnessValue = value;
+        
         if (auto sampleComponent{ SampleComponent() })
         {
             sampleComponent.RIS_SetSharpness(value);

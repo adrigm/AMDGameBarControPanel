@@ -111,6 +111,7 @@ namespace winrt::WidgetFTSample::implementation
 
         // Actualiza título y rango del slider en UI-thread
         void UpdateSharpnessRange(int min, int max);
+
     };
 } // namespace winrt::WidgetFTSample::implementation
 

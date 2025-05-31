@@ -106,8 +106,9 @@
             <TextBlock
                 x:Name="sharpnessTitle"
                 Text="Sharpness"
-                FontSize="12"
-                Margin="0,8,0,-4"
+                FontSize="13"
+                Opacity="0.75"
+                Margin="10,8,0,-4"
                 HorizontalAlignment="Left"/>
             <Slider
                 x:Name="risSharpnessSlider"
@@ -115,8 +116,10 @@
                 HorizontalAlignment="Left"
                 Margin="0,-8,0,0"
                 Minimum="0"
+                Padding="10,0"
                 Maximum="100"
                 StepFrequency="1"
+                IsFocusEngagementEnabled="False"
                 Value="{x:Bind SharpnessValue, Mode=TwoWay}"
                 IsThumbToolTipEnabled="True"/>
 
