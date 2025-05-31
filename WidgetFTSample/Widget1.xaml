@@ -31,7 +31,7 @@
 
     </Page.Resources>
 
-    <Grid>
+    <Grid Background="#25282c">
         <StackPanel
             Orientation="Vertical"
             VerticalAlignment="Top"
