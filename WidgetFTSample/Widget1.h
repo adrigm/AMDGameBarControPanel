@@ -35,6 +35,19 @@ namespace winrt::WidgetFTSample::implementation
             winrt::Windows::Foundation::IInspectable const& sender,
             winrt::Windows::UI::Xaml::RoutedEventArgs const& e);
 
+        // Propiedad: indica si RSR está habilitado
+        bool IsRSREnabled();
+        void IsRSREnabled(bool value);
+
+        // Manejador de clic del botón que conmuta RSR
+        winrt::fire_and_forget btnRsrClick(
+            winrt::Windows::Foundation::IInspectable const& sender,
+            winrt::Windows::UI::Xaml::RoutedEventArgs const& e);
+
+        // Propiedad: valor de nitidez RIS (0-100)
+        int SharpnessValue();
+        void SharpnessValue(int value);
+
         // Soporte INotifyPropertyChanged
         winrt::event_token PropertyChanged(
             Windows::UI::Xaml::Data::PropertyChangedEventHandler const& handler);
@@ -86,6 +99,11 @@ namespace winrt::WidgetFTSample::implementation
 
 		// Estado actual de RIS
 		bool m_isRISEnabled{ false };
+
+        // Estado actual de RSR
+        bool m_isRSREnabled{ false };
+        // Valor de nitidez RIS (0-100)
+		int m_sharpnessValue{ 0 }; // Valor predeterminado
     };
 } // namespace winrt::WidgetFTSample::implementation
 

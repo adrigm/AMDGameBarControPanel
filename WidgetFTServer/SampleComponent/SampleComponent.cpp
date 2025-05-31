@@ -31,6 +31,7 @@ namespace winrt::WidgetFT::implementation
             /*m_adlxFeatureController.AFMF_SetEnabled(true);
 			m_adlxFeatureController.RIS_SetEnabled(true);
             m_adlxFeatureController.RIS_SetSharpness(20);*/
+
         }
         else
         {
@@ -119,6 +120,25 @@ namespace winrt::WidgetFT::implementation
     bool SampleComponent::RIS_SetSharpness(int value)
     {
         ADLX_RESULT r = m_adlxFeatureController.RIS_SetSharpness(static_cast<adlx_int>(value));
+        return ADLX_SUCCEEDED(r);
+    }
+
+    // ---------------------------------------------------------------------
+    //  RSR (Radeon Super Resolution)
+    // ---------------------------------------------------------------------
+    bool SampleComponent::RSR_Supported() const
+    {
+        return m_adlxFeatureController.RSR_Supported();
+    }
+
+    bool SampleComponent::RSR_Enabled() const
+    {
+        return m_adlxFeatureController.RSR_Enabled();
+    }
+
+    bool SampleComponent::RSR_SetEnabled(bool enable)
+    {
+        ADLX_RESULT r = m_adlxFeatureController.RSR_SetEnabled(enable);
         return ADLX_SUCCEEDED(r);
     }
 

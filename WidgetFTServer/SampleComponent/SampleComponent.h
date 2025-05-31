@@ -55,6 +55,13 @@ namespace winrt::WidgetFT::implementation
         int RIS_SharpnessMax() const;
         bool RIS_SetSharpness(int value);
 
+        // ---------------------------------------------------------------------
+        //  RSR (Radeon Super Resolution)
+        // ---------------------------------------------------------------------
+        bool RSR_Supported()  const;
+        bool RSR_Enabled()    const;
+        bool RSR_SetEnabled(bool enable);
+
     private:
 
         winrt::fire_and_forget RaiseDemoBoolPropertyChanged(bool value);

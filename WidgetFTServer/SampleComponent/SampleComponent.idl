@@ -43,6 +43,13 @@
         Int32   RIS_SharpnessMax();
         Boolean RIS_SetSharpness(Int32 value);
 
+        ////
+		//// RSR (Radeon Super Resolution)
+        /// 
+		Boolean RSR_Supported();
+		Boolean RSR_Enabled();
+		Boolean RSR_SetEnabled(Boolean enable);
+
         //
         // Propiedad de demostración y evento asociado
         //

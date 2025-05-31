@@ -102,22 +102,49 @@
                 </Grid>
             </Button>
 
-            <!-- Slider de nitidez para RIS -->
-            <!-- <StackPanel
-                Orientation="Horizontal"
+            <!-- Slider de nitidez RIS -->
+            <Slider
+                x:Name="risSharpnessSlider"
                 Width="360"
-                Spacing="8"
-                VerticalAlignment="Center"
-                Visibility="{x:Bind RISSVisibility, Mode=OneWay}">
-
-                        <TextBlock Text="Nitidez" VerticalAlignment="Center" Width="60"/>
-                        <Slider
-                x:Name="risSlider"
+                HorizontalAlignment="Left"
+                Margin="0,-8,0,0"
                 Minimum="0"
                 Maximum="100"
-                Value="{x:Bind RISSValue, Mode=TwoWay}"
-                Width="280"/>
-            </StackPanel> -->
+                StepFrequency="1"
+                Value="{x:Bind SharpnessValue, Mode=TwoWay}"
+                IsThumbToolTipEnabled="True"/>
+
+            <!-- Botón para RSR -->
+            <Button
+                Style="{StaticResource FlatButtonStyle}"
+                Click="btnRsrClick"
+                Background="Transparent"
+                HorizontalAlignment="Left"
+                Height="64"
+                Width="360">
+
+                <Grid Height="64" Width="360" HorizontalAlignment="Left" Padding="12,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
+                        <TextBlock Text="RSR" FontWeight="SemiBold" FontSize="14"/>
+                        <TextBlock Text="Radeon Super Resolution" FontSize="12" Opacity="0.65"/>
+                    </StackPanel>
+
+                    <ToggleSwitch x:Name="rsrSwitch"
+                      Grid.Column="1"
+                      Width="64"
+                      OnContent=""
+                      OffContent=""
+                      IsTapEnabled="False"
+                      IsFocusEngaged="False"
+                      IsFocusEngagementEnabled="False"
+                      IsOn="{x:Bind IsRSREnabled, Mode=TwoWay}"/>
+                </Grid>
+            </Button>
         </StackPanel>
     </Grid>
 </Page>

@@ -25,6 +25,7 @@ namespace winrt::WidgetFTSample::implementation
             if (auto sampleComponent{ SampleComponent() })
             {
                 sampleComponent.Init();
+                m_sharpnessValue = sampleComponent.RIS_Sharpness();
 
                 // Ejemplo: comprobar soporte AFMF
                 // if (sampleComponent.AFMF_Supported()) { }
@@ -69,6 +70,18 @@ namespace winrt::WidgetFTSample::implementation
             {
                 IsRISEnabled(risStatus);
 			}
+
+            bool rsrStatus = sampleComponent.RSR_Enabled();
+            if (rsrStatus != m_isRSREnabled)
+            {
+                IsRSREnabled(rsrStatus);
+            }
+
+            int sharp = sampleComponent.RIS_Sharpness();
+            if (sharp != m_sharpnessValue)
+            {
+                SharpnessValue(sharp);
+            }
         }
     }
 
@@ -147,6 +160,50 @@ namespace winrt::WidgetFTSample::implementation
         co_await winrt::resume_background();
         IsRISEnabled(!IsRISEnabled());  // Conmutar estado
 	}
+
+
+    // --------------------- IsRSREnabled ---------------------
+    bool Widget1::IsRSREnabled()
+    {
+        return m_isRSREnabled;
+    }
+
+    void Widget1::IsRSREnabled(bool value)
+    {
+        m_isRSREnabled = value;
+        if (auto sampleComponent{ SampleComponent() })
+        {
+            sampleComponent.RSR_SetEnabled(value);
+        }
+        RaisePropertyChanged(L"IsRSREnabled");
+    }
+
+    // --------------------- btnRsrClick ----------------------
+    winrt::fire_and_forget Widget1::btnRsrClick(
+        IInspectable const&,
+        RoutedEventArgs const&)
+    {
+        auto strongThis{ get_strong() };
+        co_await winrt::resume_background();
+        IsRSREnabled(!IsRSREnabled());   // Conmutar
+    }
+
+    // -------------------- SharpnessValue --------------------
+    int Widget1::SharpnessValue()
+    {
+        return m_sharpnessValue;
+    }
+
+    void Widget1::SharpnessValue(int value)
+    {
+        m_sharpnessValue = value;
+        if (auto sampleComponent{ SampleComponent() })
+        {
+            sampleComponent.RIS_SetSharpness(value);
+        }
+        RaisePropertyChanged(L"SharpnessValue");
+    }
+
 
 
 
