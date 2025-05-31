@@ -46,7 +46,7 @@ namespace winrt::WidgetFTSample::implementation
 
         // Propiedad: valor de nitidez RIS (0-100)
         int SharpnessValue();
-        void SharpnessValue(int value);
+        winrt::fire_and_forget SharpnessValue(int value);
 
         // Soporte INotifyPropertyChanged
         winrt::event_token PropertyChanged(

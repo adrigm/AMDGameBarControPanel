@@ -32,6 +32,8 @@ namespace winrt::WidgetFTSample::implementation
                 m_sharpnessMax = sampleComponent.RIS_SharpnessMax();
                 UpdateSharpnessRange(m_sharpnessMin, m_sharpnessMax);
 
+				Refresh(nullptr, nullptr); // Llamar al refresco inicial
+
                 // Ejemplo: comprobar soporte AFMF
                 // if (sampleComponent.AFMF_Supported()) { }
             }
@@ -83,6 +85,12 @@ namespace winrt::WidgetFTSample::implementation
             }
 
             int sharp = sampleComponent.RIS_Sharpness();
+            
+            /*if (sharp) {
+				co_await winrt::resume_foreground(Dispatcher());
+                sharpnessCurrent().Text(L"(Current: " + std::to_wstring(sharp) + L")");
+            }*/
+
             // show value in console
             OutputDebugStringW(L"------------------------------\n");
             OutputDebugStringW(L"Sharpness value: ");
@@ -92,6 +100,7 @@ namespace winrt::WidgetFTSample::implementation
             if (sharp != m_sharpnessValue)
             {
                 SharpnessValue(sharp);
+                
             }
 
             int newMin = sampleComponent.RIS_SharpnessMin();
@@ -227,9 +236,14 @@ namespace winrt::WidgetFTSample::implementation
         return m_sharpnessValue;
     }
 
-    void Widget1::SharpnessValue(int value)
+    winrt::fire_and_forget Widget1::SharpnessValue(int value)
     {
         m_sharpnessValue = value;
+
+        if (m_sharpnessValue) {
+            co_await winrt::resume_foreground(Dispatcher());
+            sharpnessCurrent().Text(L"(Current: " + std::to_wstring(m_sharpnessValue) + L")");
+        }
         
         if (auto sampleComponent{ SampleComponent() })
         {
