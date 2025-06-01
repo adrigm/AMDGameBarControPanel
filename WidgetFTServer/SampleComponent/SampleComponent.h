@@ -62,6 +62,21 @@ namespace winrt::WidgetFT::implementation
         bool RSR_Enabled()    const;
         bool RSR_SetEnabled(bool enable);
 
+        // ---------------------------------------------------------------------
+        //  BOOST (AMD Boost)                                                   
+        // ---------------------------------------------------------------------
+        bool Boost_Supported()  const;                                         
+        bool Boost_Enabled()    const;                                         
+        bool Boost_SetEnabled(bool enable);                                    
+
+        int  Boost_Resolution() const;                                         
+        int  Boost_ResolutionMin() const;                                      
+        int  Boost_ResolutionMax() const;                                      
+        bool Boost_SetResolution(int value);                                   
+
+        bool Boost_SetPerfMin();                                               
+        bool Boost_SetPerfMax();                                               
+
     private:
 
         winrt::fire_and_forget RaiseDemoBoolPropertyChanged(bool value);

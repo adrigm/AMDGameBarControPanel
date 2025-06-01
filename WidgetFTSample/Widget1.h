@@ -53,6 +53,17 @@ namespace winrt::WidgetFTSample::implementation
             Windows::UI::Xaml::Data::PropertyChangedEventHandler const& handler);
         void PropertyChanged(winrt::event_token const& token) noexcept;
 
+        bool IsBoostEnabled();
+        winrt::fire_and_forget IsBoostEnabled(bool value);
+
+        winrt::fire_and_forget btnBoostClick(
+            winrt::Windows::Foundation::IInspectable const& sender,
+            winrt::Windows::UI::Xaml::RoutedEventArgs const& e);
+
+        // 0 = Calidad | 1 = Rendimiento
+        int BoostMode();
+        winrt::fire_and_forget BoostMode(int value);
+
     private: // ----------------------- Acceso a propiedades internas --------------
 
         // WidgetFTFactory (getter / setter)
@@ -112,6 +123,10 @@ namespace winrt::WidgetFTSample::implementation
         int m_sharpnessMin{ 0 };
         int m_sharpnessMax{ 100 };
 
+        bool m_isBoostEnabled{ false };
+        int  m_boostMode{ 0 };     // 0-Calidad | 1-Rendimiento
+        winrt::fire_and_forget SetVisibilityBoostMode();
+
         winrt::fire_and_forget SetVisibilitySharpness();
 
         // Actualiza título y rango del slider en UI-thread
@@ -119,7 +134,9 @@ namespace winrt::WidgetFTSample::implementation
 
         winrt::fire_and_forget UpdateInitializationState();
 
-    };
+    public:
+        void TextBlock_SelectionChanged(winrt::Windows::Foundation::IInspectable const& sender, winrt::Windows::UI::Xaml::RoutedEventArgs const& e);
+};
 } // namespace winrt::WidgetFTSample::implementation
 
 namespace winrt::WidgetFTSample::factory_implementation

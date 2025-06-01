@@ -107,6 +107,12 @@ namespace winrt::WidgetFTSample::implementation
             {
                 UpdateSharpnessRange(newMin, newMax);
             }
+
+            bool boostStatus = sampleComponent.Boost_Enabled();
+            if (boostStatus != m_isBoostEnabled)
+            {
+                IsBoostEnabled(boostStatus);
+            }
         }
     }
 
@@ -294,6 +300,72 @@ namespace winrt::WidgetFTSample::implementation
 
 
 
+    winrt::fire_and_forget Widget1::SetVisibilityBoostMode()
+    {
+        auto strongThis{ get_strong() };
+        co_await winrt::resume_foreground(Dispatcher());
+
+        boostModePanel().Visibility(
+            m_isBoostEnabled
+            ? Windows::UI::Xaml::Visibility::Visible
+            : Windows::UI::Xaml::Visibility::Collapsed);
+    }
+
+    bool Widget1::IsBoostEnabled()
+    {
+        return m_isBoostEnabled;
+    }
+
+    winrt::fire_and_forget Widget1::IsBoostEnabled(bool value)
+    {
+        if (m_isBoostEnabled == value) co_return;
+
+        auto strongThis{ get_strong() };
+        co_await winrt::resume_background();
+
+        m_isBoostEnabled = value;
+        SetVisibilityBoostMode();
+
+        if (auto sampleComponent{ SampleComponent() })
+        {
+            sampleComponent.Boost_SetEnabled(value);
+        }
+        RaisePropertyChanged(L"IsBoostEnabled");
+    }
+
+    winrt::fire_and_forget Widget1::btnBoostClick(
+        IInspectable const&, RoutedEventArgs const&)
+    {
+        auto strongThis{ get_strong() };
+        co_await winrt::resume_background();
+        IsBoostEnabled(!IsBoostEnabled());   // Conmutar
+    }
+
+    int Widget1::BoostMode()
+    {
+        return m_boostMode;
+    }
+
+    winrt::fire_and_forget Widget1::BoostMode(int value)
+    {
+        if (value == m_boostMode) co_return;          // sin cambios
+
+        auto strongThis{ get_strong() };
+        co_await winrt::resume_background();
+
+        m_boostMode = value;
+
+        if (auto sampleComponent{ SampleComponent() })
+        {
+            // 0 = Calidad → PerfMin | 1 = Rendimiento → PerfMax
+            (value == 0) ? sampleComponent.Boost_SetPerfMin()
+                : sampleComponent.Boost_SetPerfMax();
+        }
+        RaisePropertyChanged(L"BoostMode");
+    }
+
+
+
     //----------------------------------------------------------------------------
     //  WidgetFTFactory  (getter / setter)
     //----------------------------------------------------------------------------
@@ -354,3 +426,8 @@ namespace winrt::WidgetFTSample::implementation
         // Manejar la excepción si los delegados lanzan
     }
 } // namespace winrt::WidgetFTSample::implementation
+
+void winrt::WidgetFTSample::implementation::Widget1::TextBlock_SelectionChanged(winrt::Windows::Foundation::IInspectable const& sender, winrt::Windows::UI::Xaml::RoutedEventArgs const& e)
+{
+
+}

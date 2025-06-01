@@ -75,6 +75,19 @@ public:
     ADLX_RESULT  RSR_SetEnabled(bool enable);
 
     // ---------------------------------------------------------------------
+    //  BOOST  (Resolution‑adaptive Frequency Boost)
+    // ---------------------------------------------------------------------
+    bool         Boost_Supported() const { return m_boost != nullptr; }             
+    bool         Boost_Enabled()   const { return m_boostEnabled; }                 
+    ADLX_RESULT  Boost_SetEnabled(bool enable);                                     
+
+    // Resolution limit controls (valid only if Boost is enabled)                 
+    adlx_int     Boost_Resolution() const { return m_boostResolution; }             
+    adlx_int     Boost_ResolutionMin() const { return m_boostResRange.minValue; }   
+    adlx_int     Boost_ResolutionMax() const { return m_boostResRange.maxValue; }   
+    ADLX_RESULT  Boost_SetResolution(adlx_int value);                               
+
+    // ---------------------------------------------------------------------
     //  Custom Color – master toggle + three sliders
     // ---------------------------------------------------------------------
     bool         CustomColor_Supported() const { return m_customColor != nullptr; }
@@ -115,6 +128,7 @@ private:
     IADLX3DAMDFluidMotionFramesPtr       m_afmf = nullptr;
     IADLX3DImageSharpeningPtr            m_ris = nullptr;
     IADLX3DRadeonSuperResolutionPtr      m_rsr = nullptr;
+    IADLX3DBoostPtr                      m_boost = nullptr;  
 
     IADLXDisplayServicesPtr              m_displaySrv = nullptr;
     IADLXDisplayCustomColorPtr           m_customColor = nullptr;
@@ -133,6 +147,11 @@ private:
 
     // RSR
     bool         m_rsrEnabled = false;
+
+    // Boost                                                                 
+    bool         m_boostEnabled = false;                                     
+    adlx_int     m_boostResolution = 0;                                      
+    ADLX_IntRange  m_boostResRange{ 0 };                                     
 
     // Custom Color
     bool         m_customColorEnabled = false;

@@ -50,6 +50,21 @@
 		Boolean RSR_Enabled();
 		Boolean RSR_SetEnabled(Boolean enable);
 
+        // ---------------------------------------------------------------------
+        //  BOOST (AMD Boost)                                                   
+        // ---------------------------------------------------------------------
+        Boolean Boost_Supported();                                             
+        Boolean Boost_Enabled();                                               
+        Boolean Boost_SetEnabled(Boolean enable);                              
+
+        Int32   Boost_Resolution();                                            
+        Int32   Boost_ResolutionMin();                                         
+        Int32   Boost_ResolutionMax();                                         
+        Boolean Boost_SetResolution(Int32 value);                              
+
+        Boolean Boost_SetPerfMin();     // Convenience → minValue              
+        Boolean Boost_SetPerfMax();     // Convenience → maxValue              
+
         //
         // Propiedad de demostración y evento asociado
         //

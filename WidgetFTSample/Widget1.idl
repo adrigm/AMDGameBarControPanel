@@ -10,5 +10,9 @@ namespace WidgetFTSample
 
         Boolean IsRSREnabled{ get; set; };
         Int32   SharpnessValue{ get; set; };
+
+        Boolean IsBoostEnabled{ get; set; };
+        // 0 = Calidad | 1 = Rendimiento
+        Int32   BoostMode{ get; set; };
     }
 }

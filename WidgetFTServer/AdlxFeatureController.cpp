@@ -72,9 +72,8 @@ ADLX_RESULT AdlxFeatureController::Initialize()
                 }
             }
 
-            // RIS
+            // RIS + BOOST (require GPU handle)
             {
-                // Need a GPU object for RIS
                 IADLXGPUListPtr gpuList;
                 res = m_adlx.GetSystemServices()->GetGPUs(&gpuList);
                 if (ADLX_SUCCEEDED(res) && gpuList && !gpuList->Empty())
@@ -83,6 +82,7 @@ ADLX_RESULT AdlxFeatureController::Initialize()
                     gpuList->At(0, &gpu);
                     if (gpu)
                     {
+                        // RIS ------------------------------------------------
                         d3dSrv->GetImageSharpening(gpu, &m_ris);
                         if (m_ris)
                         {
@@ -90,6 +90,15 @@ ADLX_RESULT AdlxFeatureController::Initialize()
                             m_ris->GetSharpness(&m_risSharpness);
                             m_ris->GetSharpnessRange(&m_risRange);
                         }
+
+                        // BOOST --------------------------------------------- 
+                        d3dSrv->GetBoost(gpu, &m_boost);                       
+                        if (m_boost)                                           
+                        {                                                      
+                            m_boost->IsEnabled(&m_boostEnabled);               
+                            m_boost->GetResolution(&m_boostResolution);        
+                            m_boost->GetResolutionRange(&m_boostResRange);     
+                        }                                                      
                     }
                 }
             }
@@ -175,6 +184,11 @@ ADLX_RESULT AdlxFeatureController::Refresh()
             }
             if (m_rsr)
                 m_rsr->IsEnabled(&m_rsrEnabled);
+            if (m_boost)                                                        
+            {                                                                  
+                m_boost->IsEnabled(&m_boostEnabled);                           
+                m_boost->GetResolution(&m_boostResolution);                     
+            }                                                                  
             if (m_customColor)
             {
                 m_customColor->GetBrightness(&m_brightness);
@@ -248,6 +262,39 @@ ADLX_RESULT AdlxFeatureController::RSR_SetEnabled(bool enable)
             if (ADLX_SUCCEEDED(res))
                 m_rsrEnabled = enable;
             return res;
+        });
+}
+
+// ---------------------------------------------------------------------------
+//  BOOST (new)
+// ---------------------------------------------------------------------------
+ADLX_RESULT AdlxFeatureController::Boost_SetEnabled(bool enable)                 
+{
+    return CallWithLock([this, enable]() -> ADLX_RESULT                          
+        {
+            if (!m_boost)                                                        
+                return ADLX_FAIL;                                               
+            ADLX_RESULT res = m_boost->SetEnabled(enable);                      
+            if (ADLX_SUCCEEDED(res))
+            {
+                m_boostEnabled = enable;                                        
+            }
+            return res;                                                         
+        });
+}
+
+ADLX_RESULT AdlxFeatureController::Boost_SetResolution(adlx_int value)           
+{
+    return CallWithLock([this, value]() -> ADLX_RESULT                           
+        {
+            if (!m_boost || !m_boostEnabled)                                     
+                return ADLX_FAIL;                                               
+            if (value < m_boostResRange.minValue || value > m_boostResRange.maxValue)
+                return ADLX_INVALID_ARGS;                                       
+            ADLX_RESULT res = m_boost->SetResolution(value);                    
+            if (ADLX_SUCCEEDED(res))
+                m_boostResolution = value;                                      
+            return res;                                                         
         });
 }
 

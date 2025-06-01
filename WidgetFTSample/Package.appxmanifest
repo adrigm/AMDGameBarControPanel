@@ -11,7 +11,7 @@
   <Identity
     Name="AGMStudio.AMDControlPanel"
     Publisher="CN=adrigm"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
   
   <mp:PhoneIdentity PhoneProductId="9d642686-acee-401e-8705-597c04e17889" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
   
@@ -74,10 +74,10 @@
                   <AllowForegroundTransparency>false</AllowForegroundTransparency>
                   <Size>
                     <Height>300</Height>
-                    <Width>400</Width>
-                    <MinHeight>300</MinHeight>
+                    <Width>450</Width>
+                    <MinHeight>450</MinHeight>
                     <MinWidth>300</MinWidth>
-                    <MaxHeight>500</MaxHeight>
+                    <MaxHeight>450</MaxHeight>
                     <MaxWidth>400</MaxWidth>
                   </Size>
                   <ResizeSupported>

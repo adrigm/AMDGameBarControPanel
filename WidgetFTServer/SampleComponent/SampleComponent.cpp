@@ -140,6 +140,56 @@ namespace winrt::WidgetFT::implementation
         return ADLX_SUCCEEDED(r);
     }
 
+    // ---------------------------------------------------------------------
+    //  BOOST (AMD Boost)                                                      
+    // ---------------------------------------------------------------------
+    bool SampleComponent::Boost_Supported() const                              
+    {                                                                          
+        return m_adlxFeatureController.Boost_Supported();                      
+    }                                                                          
+
+    bool SampleComponent::Boost_Enabled() const                                
+    {                                                                          
+        return m_adlxFeatureController.Boost_Enabled();                        
+    }                                                                          
+
+    bool SampleComponent::Boost_SetEnabled(bool enable)                        
+    {                                                                          
+        ADLX_RESULT r = m_adlxFeatureController.Boost_SetEnabled(enable);      
+        return ADLX_SUCCEEDED(r);                                                         
+    }                                                                          
+
+    int SampleComponent::Boost_Resolution() const                              
+    {                                                                          
+        return static_cast<int>(m_adlxFeatureController.Boost_Resolution());    
+    }                                                                          
+
+    int SampleComponent::Boost_ResolutionMin() const                           
+    {                                                                          
+        return static_cast<int>(m_adlxFeatureController.Boost_ResolutionMin()); 
+    }                                                                          
+
+    int SampleComponent::Boost_ResolutionMax() const                           
+    {                                                                          
+        return static_cast<int>(m_adlxFeatureController.Boost_ResolutionMax()); 
+    }                                                                          
+
+    bool SampleComponent::Boost_SetResolution(int value)                       
+    {                                                                          
+        ADLX_RESULT r = m_adlxFeatureController.Boost_SetResolution(static_cast<adlx_int>(value)); 
+        return ADLX_SUCCEEDED(r);                                              
+    }                                                                          
+
+    bool SampleComponent::Boost_SetPerfMin()                                   
+    {                                                                          
+        return Boost_SetResolution(Boost_ResolutionMin());                     
+    }                                                                          
+
+    bool SampleComponent::Boost_SetPerfMax()                                   
+    {                                                                          
+        return Boost_SetResolution(Boost_ResolutionMax());                     
+    }                                                                          
+
 
 
     void SampleComponent::DemoSync()
