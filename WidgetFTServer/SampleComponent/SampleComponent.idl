@@ -1,22 +1,11 @@
 ﻿namespace WidgetFT
 {
-    // Delegado para la notificación cuando cambia DemoBoolProperty
-    delegate void DemoBoolPropertyChangedDelegate(Boolean newValue);
 
     runtimeclass SampleComponent
     {
-        ////
-        //// Operaciones generales
-        ////
-        Windows.Foundation.IAsyncAction DemoAsync();
-        void  DemoSync();
         Boolean  Init();
         void  Refresh();
 
-        ////
-        //// Contador usado en la demo síncrona
-        ////
-        Int32 DemoSyncCounter();
 
         ////
         //// Estado global de error
@@ -64,11 +53,5 @@
 
         Boolean Boost_SetPerfMin();     // Convenience → minValue              
         Boolean Boost_SetPerfMax();     // Convenience → maxValue              
-
-        //
-        // Propiedad de demostración y evento asociado
-        //
-        Boolean DemoBoolProperty;                       // { get; set; }
-        event DemoBoolPropertyChangedDelegate DemoBoolPropertyChanged;
     }
 }

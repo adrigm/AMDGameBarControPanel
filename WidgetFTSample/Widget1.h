@@ -83,10 +83,6 @@ namespace winrt::WidgetFTSample::implementation
 
     private: // ----------------------- Estado interno ------------------------------
 
-        // Revoker para la propiedad DemoBool del SampleComponent
-        winrt::WidgetFT::SampleComponent::DemoBoolPropertyChanged_revoker
-            m_demoBoolPropertyChangedRevoker;
-
         // Evento PropertyChanged típico de MVVM
         winrt::event<Windows::UI::Xaml::Data::PropertyChangedEventHandler>
             m_propertyChanged;

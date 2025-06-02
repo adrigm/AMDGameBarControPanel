@@ -17,14 +17,6 @@ namespace winrt::WidgetFT::implementation
     {
         SampleComponent() = default;
 
-        winrt::Windows::Foundation::IAsyncAction DemoAsync();
-        void DemoSync();
-        bool DemoBoolProperty();
-        void DemoBoolProperty(bool value);
-        winrt::event_token DemoBoolPropertyChanged(winrt::WidgetFT::DemoBoolPropertyChangedDelegate const& handler);
-        void DemoBoolPropertyChanged(winrt::event_token const& token) noexcept;
-        int DemoSyncCounter() const noexcept;
-
         bool Init();
 
         void Refresh();
@@ -77,19 +69,11 @@ namespace winrt::WidgetFT::implementation
         bool Boost_SetPerfMin();                                               
         bool Boost_SetPerfMax();                                               
 
-    private:
-
-        winrt::fire_and_forget RaiseDemoBoolPropertyChanged(bool value);
-		int m_demoSyncCounter{ 5 };
 
     private:
 		AdlxFeatureController m_adlxFeatureController;
 
-        bool m_demoBoolProperty{ false };
-        winrt::event<winrt::WidgetFT::DemoBoolPropertyChangedDelegate> m_demoBoolPropertyChangedEvent;
-
 		// bool for AFMF State
 		bool m_afmfEnabled{ false };
-		winrt::event<winrt::WidgetFT::DemoBoolPropertyChangedDelegate> m_afmfStateChangedEvent;
     };
 }
