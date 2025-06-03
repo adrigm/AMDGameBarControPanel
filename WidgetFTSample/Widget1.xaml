@@ -61,6 +61,7 @@
 
                     <ToggleSwitch x:Name="afmfSwitch"
                                   Grid.Column="1"
+                                  IsTabStop="False"
                                   Width="64"
                                   OnContent=""
                                   OffContent=""
@@ -93,6 +94,7 @@
 
                     <ToggleSwitch x:Name="risSwitch"
                                   Grid.Column="1"
+                                  IsTabStop="False"
                                   Width="64"
                                   OnContent=""
                                   OffContent=""
@@ -158,6 +160,7 @@
 
                     <ToggleSwitch x:Name="rsrSwitch"
                       Grid.Column="1"
+                      IsTabStop="False"
                       Width="64"
                       OnContent=""
                       OffContent=""
@@ -190,6 +193,7 @@
 
                     <ToggleSwitch x:Name="boostSwitch"
                                   Grid.Column="1"
+                                  IsTabStop="False"
                                   Width="64"
                                   OnContent=""
                                   OffContent=""

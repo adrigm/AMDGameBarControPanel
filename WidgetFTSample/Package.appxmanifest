@@ -11,7 +11,7 @@
   <Identity
     Name="AGMStudio.AMDControlPanel"
     Publisher="CN=adrigm"
-    Version="1.0.1.0" />
+    Version="1.1.0.0" />
   
   <mp:PhoneIdentity PhoneProductId="9d642686-acee-401e-8705-597c04e17889" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
   

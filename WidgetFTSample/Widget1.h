@@ -130,6 +130,8 @@ namespace winrt::WidgetFTSample::implementation
 
         winrt::fire_and_forget UpdateInitializationState();
 
+        int  ResolutionToBoostMode(int res, int resMin, int resMax);
+
     public:
         void TextBlock_SelectionChanged(winrt::Windows::Foundation::IInspectable const& sender, winrt::Windows::UI::Xaml::RoutedEventArgs const& e);
 };

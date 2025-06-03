@@ -113,6 +113,23 @@ namespace winrt::WidgetFTSample::implementation
             {
                 IsBoostEnabled(boostStatus);
             }
+
+            // --- Sincronización del modo Boost ---------------------------
+            int resCur = sampleComponent.Boost_Resolution();
+            int resMin = sampleComponent.Boost_ResolutionMin();
+            int resMax = sampleComponent.Boost_ResolutionMax();
+
+            int mode = ResolutionToBoostMode(resCur, resMin, resMax);
+
+            if (mode != m_boostMode)
+            {
+                // Solo actualizamos el backing-field y notificamos;
+                // no escribimos de nuevo en el driver.
+                m_boostMode = mode;
+
+                co_await winrt::resume_foreground(Dispatcher());
+                RaisePropertyChanged(L"BoostMode");
+            }
         }
     }
 
@@ -348,7 +365,7 @@ namespace winrt::WidgetFTSample::implementation
 
     winrt::fire_and_forget Widget1::BoostMode(int value)
     {
-        if (value == m_boostMode) co_return;          // sin cambios
+        if (value == m_boostMode) co_return;
 
         auto strongThis{ get_strong() };
         co_await winrt::resume_background();
@@ -364,6 +381,14 @@ namespace winrt::WidgetFTSample::implementation
         RaisePropertyChanged(L"BoostMode");
     }
 
+    // --------------
+
+    int Widget1::ResolutionToBoostMode(int res, int resMin, int resMax)
+    {
+        // 0 = Calidad (resolución al máximo)
+        // 1 = Rendimiento (resolución al mínimo)
+        return (res == resMax) ? 1 : 0;
+    }
 
 
     //----------------------------------------------------------------------------
