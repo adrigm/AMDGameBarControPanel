@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Width="400"
-    Height="400">
+    Height="430">
 
     <Page.Resources>
         <!-- Estilo para botones planos -->
@@ -31,13 +31,13 @@
 
     </Page.Resources>
 
-    <Grid Background="#25282c" HorizontalAlignment="Center">
+    <Grid Background="#25282c" HorizontalAlignment="Center" VerticalAlignment="Top">
         <StackPanel
             x:Name="contentPanel"
             Orientation="Vertical"
             VerticalAlignment="Top"
             HorizontalAlignment="Center"
-            Spacing="12">
+            Spacing="12" Height="430">
 
             <!-- Botón para AFMF -->
             <Button
@@ -203,16 +203,16 @@
             <!-- Selector modo Boost -->
             <StackPanel x:Name="boostModePanel"
                         Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Visibility="Collapsed"
+                        Visibility="Visible"
                         Spacing="10"
                         Padding="30,0,30,0">
 
-                <TextBlock Text="Mode" FontSize="13" Opacity="0.75"
+                <TextBlock Text="Performance mode" FontSize="13" Opacity="0.75"
                            VerticalAlignment="Center"/>
 
                 <ComboBox x:Name="boostModeCombo"
-                          Width="150"
+                          Width="180"
+                          Margin="20,0,0,0"
                           SelectedIndex="{x:Bind BoostMode, Mode=TwoWay}">
                     <ComboBoxItem Content="Quality"/>
                     <ComboBoxItem Content="Performance"/>

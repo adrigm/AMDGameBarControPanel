@@ -73,11 +73,11 @@
                 <Window>
                   <AllowForegroundTransparency>false</AllowForegroundTransparency>
                   <Size>
-                    <Height>300</Height>
+                    <Height>430</Height>
                     <Width>450</Width>
-                    <MinHeight>450</MinHeight>
+                    <MinHeight>430</MinHeight>
                     <MinWidth>300</MinWidth>
-                    <MaxHeight>450</MaxHeight>
+                    <MaxHeight>430</MaxHeight>
                     <MaxWidth>400</MaxWidth>
                   </Size>
                   <ResizeSupported>

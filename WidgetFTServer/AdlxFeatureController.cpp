@@ -111,33 +111,33 @@ ADLX_RESULT AdlxFeatureController::Initialize()
             // -------------------------------------------------------------
             // Display / Custom Color
             // -------------------------------------------------------------
-            res = m_adlx.GetSystemServices()->GetDisplaysServices(&m_displaySrv);
-            if (ADLX_SUCCEEDED(res) && m_displaySrv)
-            {
-                IADLXDisplayListPtr displayList;
-                if (ADLX_SUCCEEDED(m_displaySrv->GetDisplays(&displayList)) && displayList && !displayList->Empty())
-                {
-                    IADLXDisplayPtr display;
-                    displayList->At(0, &display);
-                    if (display)
-                    {
-                        m_displaySrv->GetCustomColor(display, &m_customColor);
-                        if (m_customColor)
-                        {
-                            m_customColor->GetBrightness(&m_brightness);
-                            m_customColor->GetContrast(&m_contrast);
-                            m_customColor->GetSaturation(&m_saturation);
-                            m_customColor->GetBrightnessRange(&m_brightnessRange);
-                            m_customColor->GetContrastRange(&m_contrastRange);
-                            m_customColor->GetSaturationRange(&m_saturationRange);
-                            // Assume enabled if any value differs from default
-                            m_customColorEnabled = (m_brightness != kDefaultBrightness ||
-                                m_contrast != kDefaultContrast ||
-                                m_saturation != kDefaultSaturation);
-                        }
-                    }
-                }
-            }
+            //res = m_adlx.GetSystemServices()->GetDisplaysServices(&m_displaySrv);
+            //if (ADLX_SUCCEEDED(res) && m_displaySrv)
+            //{
+            //    IADLXDisplayListPtr displayList;
+            //    if (ADLX_SUCCEEDED(m_displaySrv->GetDisplays(&displayList)) && displayList && !displayList->Empty())
+            //    {
+            //        IADLXDisplayPtr display;
+            //        displayList->At(0, &display);
+            //        if (display)
+            //        {
+            //            m_displaySrv->GetCustomColor(display, &m_customColor);
+            //            if (m_customColor)
+            //            {
+            //                m_customColor->GetBrightness(&m_brightness);
+            //                m_customColor->GetContrast(&m_contrast);
+            //                m_customColor->GetSaturation(&m_saturation);
+            //                m_customColor->GetBrightnessRange(&m_brightnessRange);
+            //                m_customColor->GetContrastRange(&m_contrastRange);
+            //                m_customColor->GetSaturationRange(&m_saturationRange);
+            //                // Assume enabled if any value differs from default
+            //                m_customColorEnabled = (m_brightness != kDefaultBrightness ||
+            //                    m_contrast != kDefaultContrast ||
+            //                    m_saturation != kDefaultSaturation);
+            //            }
+            //        }
+            //    }
+            //}
 
             // Success path
             m_initialized = true;
