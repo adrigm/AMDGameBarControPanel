@@ -89,7 +89,7 @@
 
                     <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
                         <TextBlock Text="RIS" FontWeight="SemiBold" FontSize="14"/>
-                        <TextBlock Text="Radeon Image Sharpening" FontSize="12" Opacity="0.65"/>
+                        <TextBlock Text="Radeon Image Sharpening (Version 1)" FontSize="12" Opacity="0.65"/>
                     </StackPanel>
 
                     <ToggleSwitch x:Name="risSwitch"
@@ -207,7 +207,7 @@
             <!-- Selector modo Boost -->
             <StackPanel x:Name="boostModePanel"
                         Orientation="Horizontal"
-                        Visibility="Visible"
+                        Visibility="Collapsed"
                         Spacing="10"
                         Padding="30,0,30,0">
 
@@ -230,11 +230,15 @@
         <!-- Mensaje para hardware no soportado -->
         <TextBlock
         x:Name="unsupportedText"
-        Text="Device not supported"
+        Text="Looks like your device isn’t supported. This widget is made just for AMD graphics cards — make sure you have the AMD Adrenalin software installed to use it."
         Foreground="White"
         FontSize="16"
+        MaxLines="5"
+        TextWrapping="Wrap"
+        TextAlignment="Center"
         FontWeight="SemiBold"
         HorizontalAlignment="Center"
+        MaxWidth="280"
         VerticalAlignment="Center"
         Visibility="Collapsed"/>
     </Grid>

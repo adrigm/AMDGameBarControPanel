@@ -18,7 +18,14 @@ namespace winrt::WidgetFTSample::implementation
 
 
         // Inicializar la fábrica y el componente de ejemplo
-        WidgetFTFactory(winrt::WidgetFTSample::GetWidgetFTFactory());
+        try
+        {
+            WidgetFTFactory(winrt::WidgetFTSample::GetWidgetFTFactory());
+        }
+        catch (...)
+        {
+            WidgetFTFactory(nullptr);
+        }
         if (auto ftFactory{ WidgetFTFactory() })
         {
             SampleComponent(ftFactory.CreateSampleComponent());
@@ -26,7 +33,6 @@ namespace winrt::WidgetFTSample::implementation
             if (auto sampleComponent{ SampleComponent() })
             {
                 m_isInitialized = sampleComponent.Init();
-                UpdateInitializationState();
 
                 if (m_isInitialized)
                 {
@@ -43,6 +49,8 @@ namespace winrt::WidgetFTSample::implementation
                 // if (sampleComponent.AFMF_Supported()) { }
             }
         }
+
+        UpdateInitializationState();
     }
 
     //----------------------------------------------------------------------------
