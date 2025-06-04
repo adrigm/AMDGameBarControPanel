@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "AdlxFeatureController.h"
+#include <iostream>
 
 // ============================================================================
 //  Implementation
@@ -50,94 +51,7 @@ ADLX_RESULT AdlxFeatureController::Initialize()
                 return res;
             }
 
-            // -------------------------------------------------------------
-            // 3D Settings interfaces
-            // -------------------------------------------------------------
-            IADLX3DSettingsServicesPtr d3dSrv;
-            res = m_adlx.GetSystemServices()->Get3DSettingsServices(&d3dSrv);
-            if (!ADLX_SUCCEEDED(res))
-            {
-                m_errorMessage = L"Failed to obtain 3D settings services";
-                return res;
-            }
-
-            // AFMF
-            {
-                IADLX3DSettingsServices1Ptr d3dSrv1(d3dSrv);
-                if (d3dSrv1)
-                {
-                    d3dSrv1->GetAMDFluidMotionFrames(&m_afmf);
-                    if (m_afmf)
-                        m_afmf->IsEnabled(&m_afmfEnabled);
-                }
-            }
-
-            // RIS + BOOST (require GPU handle)
-            {
-                IADLXGPUListPtr gpuList;
-                res = m_adlx.GetSystemServices()->GetGPUs(&gpuList);
-                if (ADLX_SUCCEEDED(res) && gpuList && !gpuList->Empty())
-                {
-                    IADLXGPUPtr gpu;
-                    gpuList->At(0, &gpu);
-                    if (gpu)
-                    {
-                        // RIS ------------------------------------------------
-                        d3dSrv->GetImageSharpening(gpu, &m_ris);
-                        if (m_ris)
-                        {
-                            m_ris->IsEnabled(&m_risEnabled);
-                            m_ris->GetSharpness(&m_risSharpness);
-                            m_ris->GetSharpnessRange(&m_risRange);
-                        }
-
-                        // BOOST --------------------------------------------- 
-                        d3dSrv->GetBoost(gpu, &m_boost);                       
-                        if (m_boost)                                           
-                        {                                                      
-                            m_boost->IsEnabled(&m_boostEnabled);               
-                            m_boost->GetResolution(&m_boostResolution);        
-                            m_boost->GetResolutionRange(&m_boostResRange);     
-                        }                                                      
-                    }
-                }
-            }
-
-            // RSR (does not require GPU handle)
-            d3dSrv->GetRadeonSuperResolution(&m_rsr);
-            if (m_rsr)
-                m_rsr->IsEnabled(&m_rsrEnabled);
-
-            // -------------------------------------------------------------
-            // Display / Custom Color
-            // -------------------------------------------------------------
-            //res = m_adlx.GetSystemServices()->GetDisplaysServices(&m_displaySrv);
-            //if (ADLX_SUCCEEDED(res) && m_displaySrv)
-            //{
-            //    IADLXDisplayListPtr displayList;
-            //    if (ADLX_SUCCEEDED(m_displaySrv->GetDisplays(&displayList)) && displayList && !displayList->Empty())
-            //    {
-            //        IADLXDisplayPtr display;
-            //        displayList->At(0, &display);
-            //        if (display)
-            //        {
-            //            m_displaySrv->GetCustomColor(display, &m_customColor);
-            //            if (m_customColor)
-            //            {
-            //                m_customColor->GetBrightness(&m_brightness);
-            //                m_customColor->GetContrast(&m_contrast);
-            //                m_customColor->GetSaturation(&m_saturation);
-            //                m_customColor->GetBrightnessRange(&m_brightnessRange);
-            //                m_customColor->GetContrastRange(&m_contrastRange);
-            //                m_customColor->GetSaturationRange(&m_saturationRange);
-            //                // Assume enabled if any value differs from default
-            //                m_customColorEnabled = (m_brightness != kDefaultBrightness ||
-            //                    m_contrast != kDefaultContrast ||
-            //                    m_saturation != kDefaultSaturation);
-            //            }
-            //        }
-            //    }
-            //}
+            res = Refresh();
 
             // Success path
             m_initialized = true;
@@ -170,36 +84,91 @@ void AdlxFeatureController::ClearFeaturePointers()
 // ---------------------------------------------------------------------------
 ADLX_RESULT AdlxFeatureController::Refresh()
 {
-    return CallWithLock([this]() -> ADLX_RESULT
-        {
-            if (!m_initialized)
-                return ADLX_FAIL;
+            ADLX_RESULT res;
 
-            if (m_afmf)
-                m_afmf->IsEnabled(&m_afmfEnabled);
-            if (m_ris)
+            // -------------------------------------------------------------
+            // 3D Settings interfaces
+            // -------------------------------------------------------------
+            IADLX3DSettingsServicesPtr d3dSrv;
+            res = m_adlx.GetSystemServices()->Get3DSettingsServices(&d3dSrv);
+            if (!ADLX_SUCCEEDED(res))
             {
-                m_ris->IsEnabled(&m_risEnabled);
-                m_ris->GetSharpness(&m_risSharpness);
+                m_errorMessage = L"Failed to obtain 3D settings services";
+                return res;
             }
+
+            // AFMF
+            {
+                IADLX3DSettingsServices1Ptr d3dSrv1(d3dSrv);
+                if (d3dSrv1)
+                {
+                    d3dSrv1->GetAMDFluidMotionFrames(&m_afmf);
+                    if (m_afmf)
+                        m_afmf->IsEnabled(&m_afmfEnabled);
+                }
+            }
+
+            // RIS + BOOST (require GPU handle)
+            {
+                IADLXGPUListPtr gpuList;
+                res = m_adlx.GetSystemServices()->GetGPUs(&gpuList);
+                if (ADLX_SUCCEEDED(res) && gpuList && !gpuList->Empty())
+                {
+                    IADLXGPUPtr gpu;
+                    // Try to locate the first discrete GPU
+                    for (adlx_uint i = 0; i < gpuList->Size(); ++i)
+                    {
+                        IADLXGPUPtr tmpGpu;
+                        if (ADLX_SUCCEEDED(gpuList->At(i, &tmpGpu)) && tmpGpu)
+                        {
+                            ADLX_GPU_TYPE type = GPUTYPE_UNDEFINED;
+                            if (ADLX_SUCCEEDED(tmpGpu->Type(&type)) && type == GPUTYPE_DISCRETE)
+                            {
+                                gpu = tmpGpu;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Fallback to the first GPU if no discrete GPU was found
+                    if (!gpu)
+                        gpuList->At(0, &gpu);
+
+                    if (gpu)
+                    {
+                        // RIS ------------------------------------------------
+                        d3dSrv->GetImageSharpening(gpu, &m_ris);
+                        if (m_ris)
+                        {
+                            m_ris->IsEnabled(&m_risEnabled);
+                            m_ris->GetSharpness(&m_risSharpness);
+                            m_ris->GetSharpnessRange(&m_risRange);
+
+                            // output in console status
+                            OutputDebugStringW(L"RIS is ");
+                            OutputDebugStringW(m_risEnabled ? L"enabled\n" : L"disabled\n");
+                        }
+
+                        // BOOST --------------------------------------------- 
+                        d3dSrv->GetBoost(gpu, &m_boost);
+                        if (m_boost)
+                        {
+                            m_boost->IsEnabled(&m_boostEnabled);
+                            m_boost->GetResolution(&m_boostResolution);
+                            m_boost->GetResolutionRange(&m_boostResRange);
+                        }
+                    }
+                }
+            }
+
+            // RSR (does not require GPU handle)
+            d3dSrv->GetRadeonSuperResolution(&m_rsr);
             if (m_rsr)
                 m_rsr->IsEnabled(&m_rsrEnabled);
-            if (m_boost)                                                        
-            {                                                                  
-                m_boost->IsEnabled(&m_boostEnabled);                           
-                m_boost->GetResolution(&m_boostResolution);                     
-            }                                                                  
-            if (m_customColor)
-            {
-                m_customColor->GetBrightness(&m_brightness);
-                m_customColor->GetContrast(&m_contrast);
-                m_customColor->GetSaturation(&m_saturation);
-                m_customColorEnabled = (m_brightness != kDefaultBrightness ||
-                    m_contrast != kDefaultContrast ||
-                    m_saturation != kDefaultSaturation);
-            }
+
+            // Success path
+            m_initialized = true;
             return ADLX_OK;
-        });
 }
 
 // ---------------------------------------------------------------------------
