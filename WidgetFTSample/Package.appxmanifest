@@ -63,7 +63,7 @@
         <uap3:Extension Category="windows.appExtension">
           <uap3:AppExtension Name="microsoft.gameBarUIExtension"
                              Id="Widget1"
-                             DisplayName="AMD Panel Control"
+                             DisplayName="AMD Control Panel"
                              Description="Quick access panel for the most common AMD settings"
                              PublicFolder="GameBar">
             <uap3:Properties>

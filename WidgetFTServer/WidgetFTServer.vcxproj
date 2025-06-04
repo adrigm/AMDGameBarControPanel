@@ -124,7 +124,8 @@
       <AdditionalOptions>/DYNAMICBASE %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Platform)'=='x64' OR '$(Platform)'=='Win32'">/CETCOMPAT %(AdditionalOptions)</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>onecoreuap_apiset.lib;amdadlx64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <!-- <AdditionalDependencies>onecoreuap_apiset.lib;amdadlx64.lib;%(AdditionalDependencies)</AdditionalDependencies> -->
+      <AdditionalDependencies>onecoreuap_apiset.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Dev\ADLX\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <!-- DEBUG Linker options -->
