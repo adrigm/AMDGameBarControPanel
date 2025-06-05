@@ -3,6 +3,7 @@
 
     runtimeclass SampleComponent
     {
+        event Windows.Foundation.TypedEventHandler<WidgetFT.SampleComponent, Windows.Foundation.IInspectable> SettingsChanged;
         Boolean  Init();
         void  Refresh();
 

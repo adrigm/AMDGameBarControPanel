@@ -16,10 +16,16 @@ namespace winrt::WidgetFT::implementation
     struct SampleComponent : SampleComponentT<SampleComponent, wrlrt::module_base>, xblib::singleton_winrt_base<SampleComponent>
     {
         SampleComponent() = default;
+        ~SampleComponent();
 
         bool Init();
 
         void Refresh();
+
+        winrt::event_token SettingsChanged(
+            Windows::Foundation::TypedEventHandler<winrt::WidgetFT::SampleComponent, winrt::Windows::Foundation::IInspectable> const& handler);
+        void SettingsChanged(winrt::event_token const& token) noexcept;
+
 
         // ---------------------------------------------------------------------
         //  Global error state
@@ -71,9 +77,16 @@ namespace winrt::WidgetFT::implementation
 
 
     private:
-		AdlxFeatureController m_adlxFeatureController;
+        class SettingsChangedCallback;
 
-		// bool for AFMF State
-		bool m_afmfEnabled{ false };
+        void On3DSettingsChanged(IADLX3DSettingsChangedEvent* event);
+
+        AdlxFeatureController m_adlxFeatureController;
+        SettingsChangedCallback* m_listener{ nullptr };
+
+        winrt::event<Windows::Foundation::TypedEventHandler<winrt::WidgetFT::SampleComponent, winrt::Windows::Foundation::IInspectable>> m_settingsChanged;
+
+        // bool for AFMF State
+        bool m_afmfEnabled{ false };
     };
 }
