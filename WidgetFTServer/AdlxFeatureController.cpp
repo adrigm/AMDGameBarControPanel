@@ -39,20 +39,20 @@ ADLX_RESULT AdlxFeatureController::CallWithLock(Fn&& fn)
 // ---------------------------------------------------------------------------
 ADLX_RESULT AdlxFeatureController::Initialize()
 {
-    return CallWithLock([this]() -> ADLX_RESULT
+    return CallWithLock([this]()->ADLX_RESULT
         {
-            //if (m_initialized)
-            //    return ADLX_OK;
-
-            m_adlx.Terminate();
-
-            
-            ADLX_RESULT res = m_adlx.Initialize();
-            if (!ADLX_SUCCEEDED(res))
+            ADLX_RESULT res;
+            if (!m_initialized)
             {
-                m_errorMessage = L"ADLX initialization failed";
-                return res;
+                res = m_adlx.Initialize();
+                if (!ADLX_SUCCEEDED(res))
+                {
+                    m_errorMessage = L"ADLX initialization failed";
+                    return res;
+                }
+
             }
+            
 
             // -------------------------------------------------------------
             // 3D Settings interfaces

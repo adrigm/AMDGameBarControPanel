@@ -77,7 +77,7 @@
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-    <PackageCertificateKeyFile>WidgetFTSample_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>02278D98BB312EC428FDF65A0780C4789247AC35</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
