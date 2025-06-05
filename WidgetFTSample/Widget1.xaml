@@ -89,7 +89,7 @@
 
                     <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
                         <TextBlock Text="RIS" FontWeight="SemiBold" FontSize="14"/>
-                        <TextBlock Text="Radeon Image Sharpening (Version 1)" FontSize="12" Opacity="0.65"/>
+                        <TextBlock Text="Radeon Image Sharpening" FontSize="12" Opacity="0.65"/>
                     </StackPanel>
 
                     <ToggleSwitch x:Name="risSwitch"
