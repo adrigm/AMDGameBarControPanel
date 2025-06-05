@@ -1,8 +1,10 @@
+import "Windows.Foundation.idl";
 ﻿namespace WidgetFT
 {
 
     runtimeclass SampleComponent
     {
+        event Windows.Foundation.TypedEventHandler<WidgetFT.SampleComponent, Object> SettingsChanged;
         Boolean  Init();
         void  Refresh();
 

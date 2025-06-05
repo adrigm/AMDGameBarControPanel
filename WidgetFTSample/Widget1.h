@@ -12,6 +12,7 @@ namespace winrt::WidgetFTSample::implementation
         //  Construcción y navegación
         //--------------------------------------------------------------------------
         Widget1();
+        ~Widget1();
         void OnNavigatedTo(
             winrt::Windows::UI::Xaml::Navigation::NavigationEventArgs const& e);
 
@@ -100,6 +101,12 @@ namespace winrt::WidgetFTSample::implementation
         winrt::fire_and_forget Refresh(
             winrt::Windows::Foundation::IInspectable const&,
             winrt::Windows::Foundation::IInspectable const&);
+
+        void OnSettingsChanged(
+            winrt::WidgetFT::SampleComponent const& sender,
+            winrt::Windows::Foundation::IInspectable const& args);
+
+        winrt::event_token m_settingsToken{};
 
         // Init Status
 		bool m_isInitialized{ false };

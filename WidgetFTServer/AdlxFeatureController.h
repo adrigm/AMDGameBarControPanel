@@ -41,6 +41,10 @@ public:
     // Refresh current state from the driver (useful when other tools modify it)
     ADLX_RESULT  Refresh();
 
+    // Register additional callbacks for 3D settings changes
+    ADLX_RESULT  AddSettingsChangedListener(IADLX3DSettingsChangedListener* listener);
+    ADLX_RESULT  RemoveSettingsChangedListener(IADLX3DSettingsChangedListener* listener);
+
     // ---------------------------------------------------------------------
     //  Global error state
     // ---------------------------------------------------------------------
@@ -166,4 +170,10 @@ private:
     const adlx_int kDefaultBrightness = 0;
     const adlx_int kDefaultContrast = 0;
     const adlx_int kDefaultSaturation = 0;
+
+    // Event handling for 3D settings
+    IADLX3DSettingsChangedHandlingPtr    m_changedHandle = nullptr;
+    class SettingsChangedCallback;
+    SettingsChangedCallback*             m_settingsListener = nullptr;
+    bool                                 m_refreshPending = false;
 };

@@ -6,6 +6,16 @@
 //  Implementation
 // ============================================================================
 
+// Forward declaration
+class AdlxFeatureController::SettingsChangedCallback : public IADLX3DSettingsChangedListener
+{
+public:
+    SettingsChangedCallback(AdlxFeatureController* owner) : m_owner(owner) {}
+    adlx_bool ADLX_STD_CALL On3DSettingsChanged(IADLX3DSettingsChangedEvent* event) override;
+private:
+    AdlxFeatureController* m_owner;
+};
+
 AdlxFeatureController::AdlxFeatureController() {}
 
 AdlxFeatureController::~AdlxFeatureController()
@@ -135,7 +145,17 @@ ADLX_RESULT AdlxFeatureController::Initialize()
                 m_rsr->IsEnabled(&m_rsrEnabled);
 
 
+            // Register for 3D settings change events
+            IADLX3DSettingsChangedHandlingPtr changeHdl;
+            if (ADLX_SUCCEEDED(d3dSrv->Get3DSettingsChangedHandling(&changeHdl)))
+            {
+                m_changedHandle = changeHdl;
+                m_settingsListener = new SettingsChangedCallback(this);
+                m_changedHandle->Add3DSettingsEventListener(m_settingsListener);
+            }
+
             // Success path
+            m_refreshPending = false;
             m_initialized = true;
             return ADLX_OK;
         });
@@ -151,6 +171,7 @@ void AdlxFeatureController::Terminate()
             ClearFeaturePointers();
             m_adlx.Terminate();
             m_initialized = false;
+            m_refreshPending = false;
         });
 }
 
@@ -161,12 +182,77 @@ void AdlxFeatureController::ClearFeaturePointers()
     m_rsr = nullptr;
     m_customColor = nullptr;
     m_displaySrv = nullptr;
+    if (m_changedHandle && m_settingsListener)
+    {
+        m_changedHandle->Remove3DSettingsEventListener(m_settingsListener);
+    }
+    m_changedHandle = nullptr;
+    delete m_settingsListener;
+    m_settingsListener = nullptr;
+}
+
+adlx_bool AdlxFeatureController::SettingsChangedCallback::On3DSettingsChanged(IADLX3DSettingsChangedEvent* event)
+{
+    if (!m_owner || !event)
+        return true;
+
+    std::lock_guard<std::mutex> guard(m_owner->m_lock);
+
+    IADLX3DSettingsChangedEvent1Ptr ev1(event);
+
+    if (ev1 && ev1->IsAMDFluidMotionFramesChanged() && m_owner->m_afmf)
+        m_owner->m_afmf->IsEnabled(&m_owner->m_afmfEnabled);
+
+    if (event->IsImageSharpeningChanged() && m_owner->m_ris)
+    {
+        m_owner->m_ris->IsEnabled(&m_owner->m_risEnabled);
+        m_owner->m_ris->GetSharpness(&m_owner->m_risSharpness);
+    }
+
+    if (event->IsBoostChanged() && m_owner->m_boost)
+    {
+        m_owner->m_boost->IsEnabled(&m_owner->m_boostEnabled);
+        m_owner->m_boost->GetResolution(&m_owner->m_boostResolution);
+    }
+
+    if (ev1 && ev1->IsRadeonSuperResolutionChanged() && m_owner->m_rsr)
+        m_owner->m_rsr->IsEnabled(&m_owner->m_rsrEnabled);
+
+    m_owner->m_refreshPending = true;
+    return true;
 }
 
 // ---------------------------------------------------------------------------
 ADLX_RESULT AdlxFeatureController::Refresh()
 {
-    return Initialize();
+    return CallWithLock([this]() -> ADLX_RESULT
+        {
+            if (!m_initialized)
+                return ADLX_FAIL;
+
+            // If an event already updated state, just clear the flag
+            if (m_refreshPending)
+            {
+                m_refreshPending = false;
+                return ADLX_OK;
+            }
+
+            if (m_afmf)
+                m_afmf->IsEnabled(&m_afmfEnabled);
+            if (m_ris)
+            {
+                m_ris->IsEnabled(&m_risEnabled);
+                m_ris->GetSharpness(&m_risSharpness);
+            }
+            if (m_rsr)
+                m_rsr->IsEnabled(&m_rsrEnabled);
+            if (m_boost)
+            {
+                m_boost->IsEnabled(&m_boostEnabled);
+                m_boost->GetResolution(&m_boostResolution);
+            }
+            return ADLX_OK;
+        });
 }
 
 // ---------------------------------------------------------------------------
@@ -361,6 +447,26 @@ ADLX_RESULT AdlxFeatureController::SetSaturation(adlx_int val)
                 m_customColorEnabled = true;
             }
             return res;
+        });
+}
+
+ADLX_RESULT AdlxFeatureController::AddSettingsChangedListener(IADLX3DSettingsChangedListener* listener)
+{
+    return CallWithLock([this, listener]() -> ADLX_RESULT
+        {
+            if (!m_changedHandle || !listener)
+                return ADLX_FAIL;
+            return m_changedHandle->Add3DSettingsEventListener(listener);
+        });
+}
+
+ADLX_RESULT AdlxFeatureController::RemoveSettingsChangedListener(IADLX3DSettingsChangedListener* listener)
+{
+    return CallWithLock([this, listener]() -> ADLX_RESULT
+        {
+            if (!m_changedHandle || !listener)
+                return ADLX_FAIL;
+            return m_changedHandle->Remove3DSettingsEventListener(listener);
         });
 }
 

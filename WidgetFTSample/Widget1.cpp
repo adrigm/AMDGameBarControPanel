@@ -53,16 +53,25 @@ namespace winrt::WidgetFTSample::implementation
         UpdateInitializationState();
     }
 
+    Widget1::~Widget1()
+    {
+        m_timer.Stop();
+        if (auto sampleComponent{ SampleComponent() })
+        {
+            sampleComponent.SettingsChanged(m_settingsToken);
+        }
+    }
+
     //----------------------------------------------------------------------------
     //  Navegación
     //----------------------------------------------------------------------------
     void Widget1::OnNavigatedTo(
         winrt::Windows::UI::Xaml::Navigation::NavigationEventArgs const& /*e*/)
     {
-        // Arranca un temporizador que refresca cada 2 segundos
-        m_timer.Interval(std::chrono::seconds(2));
-        m_timer.Tick({ this, &Widget1::Refresh });
-        m_timer.Start();
+        if (auto sampleComponent{ SampleComponent() })
+        {
+            m_settingsToken = sampleComponent.SettingsChanged({ this, &Widget1::OnSettingsChanged });
+        }
     }
 
     //----------------------------------------------------------------------------
@@ -457,6 +466,13 @@ namespace winrt::WidgetFTSample::implementation
     catch (...)
     {
         // Manejar la excepción si los delegados lanzan
+    }
+
+    void Widget1::OnSettingsChanged(
+        winrt::WidgetFT::SampleComponent const& /*sender*/,
+        winrt::Windows::Foundation::IInspectable const& /*args*/)
+    {
+        Refresh(nullptr, nullptr);
     }
 } // namespace winrt::WidgetFTSample::implementation
 
