@@ -39,9 +39,14 @@ ADLX_RESULT AdlxFeatureController::CallWithLock(Fn&& fn)
 // ---------------------------------------------------------------------------
 ADLX_RESULT AdlxFeatureController::Initialize()
 {
-            if (m_initialized)
-                return ADLX_OK;
+    return CallWithLock([this]() -> ADLX_RESULT
+        {
+            //if (m_initialized)
+            //    return ADLX_OK;
 
+            m_adlx.Terminate();
+
+            
             ADLX_RESULT res = m_adlx.Initialize();
             if (!ADLX_SUCCEEDED(res))
             {
@@ -49,11 +54,91 @@ ADLX_RESULT AdlxFeatureController::Initialize()
                 return res;
             }
 
-            res = Refresh();
+            // -------------------------------------------------------------
+            // 3D Settings interfaces
+            // -------------------------------------------------------------
+            IADLX3DSettingsServicesPtr d3dSrv;
+            res = m_adlx.GetSystemServices()->Get3DSettingsServices(&d3dSrv);
+            if (!ADLX_SUCCEEDED(res))
+            {
+                m_errorMessage = L"Failed to obtain 3D settings services";
+                return res;
+            }
+
+            // AFMF
+            {
+                IADLX3DSettingsServices1Ptr d3dSrv1(d3dSrv);
+                if (d3dSrv1)
+                {
+                    d3dSrv1->GetAMDFluidMotionFrames(&m_afmf);
+                    if (m_afmf)
+                        m_afmf->IsEnabled(&m_afmfEnabled);
+                }
+            }
+
+            // RIS + BOOST (require GPU handle)
+            {
+                IADLXGPUListPtr gpuList;
+                res = m_adlx.GetSystemServices()->GetGPUs(&gpuList);
+                if (ADLX_SUCCEEDED(res) && gpuList && !gpuList->Empty())
+                {
+                    IADLXGPUPtr gpu;
+                    // Try to locate the first discrete GPU
+                    for (adlx_uint i = 0; i < gpuList->Size(); ++i)
+                    {
+                        IADLXGPUPtr tmpGpu;
+                        if (ADLX_SUCCEEDED(gpuList->At(i, &tmpGpu)) && tmpGpu)
+                        {
+                            ADLX_GPU_TYPE type = GPUTYPE_UNDEFINED;
+                            if (ADLX_SUCCEEDED(tmpGpu->Type(&type)) && type == GPUTYPE_DISCRETE)
+                            {
+                                gpu = tmpGpu;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Fallback to the first GPU if no discrete GPU was found
+                    if (!gpu)
+                        gpuList->At(0, &gpu);
+
+                    if (gpu)
+                    {
+                        // RIS ------------------------------------------------
+                        d3dSrv->GetImageSharpening(gpu, &m_ris);
+                        if (m_ris)
+                        {
+                            m_ris->IsEnabled(&m_risEnabled);
+                            m_ris->GetSharpness(&m_risSharpness);
+                            m_ris->GetSharpnessRange(&m_risRange);
+
+                            // output in console status
+                            OutputDebugStringW(L"RIS is ");
+                            OutputDebugStringW(m_risEnabled ? L"enabled\n" : L"disabled\n");
+                        }
+
+                        // BOOST --------------------------------------------- 
+                        d3dSrv->GetBoost(gpu, &m_boost);
+                        if (m_boost)
+                        {
+                            m_boost->IsEnabled(&m_boostEnabled);
+                            m_boost->GetResolution(&m_boostResolution);
+                            m_boost->GetResolutionRange(&m_boostResRange);
+                        }
+                    }
+                }
+            }
+
+            // RSR (does not require GPU handle)
+            d3dSrv->GetRadeonSuperResolution(&m_rsr);
+            if (m_rsr)
+                m_rsr->IsEnabled(&m_rsrEnabled);
+
 
             // Success path
             m_initialized = true;
             return ADLX_OK;
+        });
 }
 
 void AdlxFeatureController::Terminate()
@@ -81,92 +166,7 @@ void AdlxFeatureController::ClearFeaturePointers()
 // ---------------------------------------------------------------------------
 ADLX_RESULT AdlxFeatureController::Refresh()
 {
-    ClearFeaturePointers();
-    ADLX_RESULT res;
-
-    // -------------------------------------------------------------
-    // 3D Settings interfaces
-    // -------------------------------------------------------------
-    IADLX3DSettingsServicesPtr d3dSrv;
-    res = m_adlx.GetSystemServices()->Get3DSettingsServices(&d3dSrv);
-    if (!ADLX_SUCCEEDED(res))
-    {
-        m_errorMessage = L"Failed to obtain 3D settings services";
-        return res;
-    }
-
-    // AFMF
-    {
-        IADLX3DSettingsServices1Ptr d3dSrv1(d3dSrv);
-        if (d3dSrv1)
-        {
-            d3dSrv1->GetAMDFluidMotionFrames(&m_afmf);
-            if (m_afmf)
-                m_afmf->IsEnabled(&m_afmfEnabled);
-        }
-    }
-
-    // RIS + BOOST (require GPU handle)
-    {
-        IADLXGPUListPtr gpuList;
-        res = m_adlx.GetSystemServices()->GetGPUs(&gpuList);
-        if (ADLX_SUCCEEDED(res) && gpuList && !gpuList->Empty())
-        {
-            IADLXGPUPtr gpu;
-            // Try to locate the first discrete GPU
-            for (adlx_uint i = 0; i < gpuList->Size(); ++i)
-            {
-                IADLXGPUPtr tmpGpu;
-                if (ADLX_SUCCEEDED(gpuList->At(i, &tmpGpu)) && tmpGpu)
-                {
-                    ADLX_GPU_TYPE type = GPUTYPE_UNDEFINED;
-                    if (ADLX_SUCCEEDED(tmpGpu->Type(&type)) && type == GPUTYPE_DISCRETE)
-                    {
-                        gpu = tmpGpu;
-                        break;
-                    }
-                }
-            }
-
-            // Fallback to the first GPU if no discrete GPU was found
-            if (!gpu)
-                gpuList->At(0, &gpu);
-
-            if (gpu)
-            {
-                // RIS ------------------------------------------------
-                d3dSrv->GetImageSharpening(gpu, &m_ris);
-                if (m_ris)
-                {
-                    m_ris->IsEnabled(&m_risEnabled);
-                    m_ris->GetSharpness(&m_risSharpness);
-                    m_ris->GetSharpnessRange(&m_risRange);
-
-                    // output in console status
-                    OutputDebugStringW(L"RIS is ");
-                    OutputDebugStringW(m_risEnabled ? L"enabled\n" : L"disabled\n");
-                }
-
-                // BOOST --------------------------------------------- 
-                d3dSrv->GetBoost(gpu, &m_boost);
-                if (m_boost)
-                {
-                    m_boost->IsEnabled(&m_boostEnabled);
-                    m_boost->GetResolution(&m_boostResolution);
-                    m_boost->GetResolutionRange(&m_boostResRange);
-                }
-            }
-        }
-    }
-
-    // RSR (does not require GPU handle)
-    d3dSrv->GetRadeonSuperResolution(&m_rsr);
-    if (m_rsr)
-        m_rsr->IsEnabled(&m_rsrEnabled);
-
-    // Success path
-    m_initialized = true;
-    return ADLX_OK;
+    return Initialize();
 }
 
 // ---------------------------------------------------------------------------
